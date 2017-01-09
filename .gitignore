@@ -1,0 +1,8 @@
+node_modules/
+coverage/
+coverage.html
+.vscode/
+.idea/
+build/
+release/
+results.txt

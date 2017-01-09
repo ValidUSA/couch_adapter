@@ -1,0 +1,27 @@
+{
+  "name": "couch_adapter",
+  "version": "1.0.0",
+  "description": "An adpater to the couchdb that gives CRUD API for a database",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@valid-atlassian.validusa.com:7999/wlapi/couch_adapter.git"
+  },
+  "keywords": [
+    "couch",
+    "adapter"
+  ],
+  "author": "Justin Ashworth",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "nano": "^6.2.0",
+    "nano-promises": "^1.2.0",
+    "pino": "^3.1.0"
+  }
+}
