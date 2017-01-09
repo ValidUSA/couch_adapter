@@ -6,4 +6,4 @@ coverage.html
 build/
 release/
 results.txt
-*.log
+couch_adapter.log
