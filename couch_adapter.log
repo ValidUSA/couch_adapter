@@ -1,0 +1,3 @@
+{"pid":15594,"hostname":"work-laptotp","name":"couch_adapter","level":30,"time":1483978619797,"msg":"couch_adapter constructed.","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"v":1}
+{"pid":15594,"hostname":"work-laptotp","name":"couch_adapter","level":50,"time":1483978619800,"msg":"Invalid db {\"url\":\"http://test.test.com\",\"user\":\"admin\",\"pass\":\"somepass\",\"db\":\"\"}","v":1}
+{"pid":15594,"hostname":"work-laptotp","name":"couch_adapter","level":30,"time":1483978619800,"msg":"couch_adapter constructed.","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"v":1}

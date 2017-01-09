@@ -10,4 +10,4 @@ module.exports = function (config, logger) {
     return new Promise((resolve, reject) => {
         resolve("done");
     });
-}
+};

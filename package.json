@@ -4,7 +4,12 @@
   "description": "An adpater to the couchdb that gives CRUD API for a database",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha",
+    "lint": "npm run lint:jshint && npm run lint:jscs && npm run lint:testJscs && npm run lint:testJshint",
+    "lint:jshint": "jshint ./src/ && jshint ./index.js",
+    "lint:jscs": "jscs ./src/ && jscs ./index.js",
+    "lint:testJscs": "jscs ./test/",
+    "lint:testJshint": "jshint ./test/"    
   },
   "repository": {
     "type": "git",
@@ -17,9 +22,11 @@
   "author": "Justin Ashworth",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^3.5.0",
     "mocha": "^3.2.0"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "nano": "^6.2.0",
     "nano-promises": "^1.2.0",
     "pino": "^3.1.0"

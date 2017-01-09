@@ -11,4 +11,4 @@ module.exports = function (config, logger, id) {
     return new Promise((resolve, reject) => {
         resolve("done");
     });
-}
+};
