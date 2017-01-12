@@ -89,11 +89,11 @@ describe("get tests", function () {
         }).catch((error) => {
             assert.isTrue(error.error === "not_found");
         });
-    })
+    });
 
     after(function (done) {
         this.timeout(5000);
-        dbTeardown(config).then((result) =>{
+        dbTeardown(config).then((result) => {
             done();
         });
     });

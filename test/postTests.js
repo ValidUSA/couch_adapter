@@ -95,7 +95,7 @@ describe("Post Tests", function ()  {
 
     after(function (done) {
         this.timeout(5000);
-        dbTeardown(config).then((result) =>{
+        dbTeardown(config).then((result) => {
             done();
         });
     });

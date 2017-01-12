@@ -71,7 +71,7 @@ describe("Delete Tests", function () {
         };
         return deleteMethod(configValues, logger.child({
             type: "delete"
-        }), "awest").then((result)=>{
+        }), "awest").then((result) => {
             return getMethod(configValues, logger.child({
                 type: "get"
             }), "awest");
@@ -82,7 +82,7 @@ describe("Delete Tests", function () {
 
     after(function (done) {
         this.timeout(5000);
-        dbTeardown(config).then((result) =>{
+        dbTeardown(config).then((result) => {
             done();
         });
     });
