@@ -1,3 +1,11 @@
-{"pid":15594,"hostname":"work-laptotp","name":"couch_adapter","level":30,"time":1483978619797,"msg":"couch_adapter constructed.","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"v":1}
-{"pid":15594,"hostname":"work-laptotp","name":"couch_adapter","level":50,"time":1483978619800,"msg":"Invalid db {\"url\":\"http://test.test.com\",\"user\":\"admin\",\"pass\":\"somepass\",\"db\":\"\"}","v":1}
-{"pid":15594,"hostname":"work-laptotp","name":"couch_adapter","level":30,"time":1483978619800,"msg":"couch_adapter constructed.","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":30,"time":1484250155674,"msg":"couch_adapter constructed.","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":50,"time":1484250155676,"msg":"Invalid db {\"url\":\"http://test.test.com\",\"user\":\"admin\",\"pass\":\"somepass\",\"db\":\"\"}","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155676,"msg":"Begin couch_adapter constructor.","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":30,"time":1484250155676,"msg":"couch_adapter constructed.","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155676,"msg":"End couch_adapter constructor.","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155676,"msg":"12345 Perform Get","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155677,"msg":"Begin Test Function","config":{"url":"http://test.test.com","user":"admin","pass":"somepass","db":"users"},"id":"12345","type":"get","v":1}
+a052077e976","type":"post","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155664,"msg":"Second Insert Successful","type":"post","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155664,"msg":"Begin Get Function","config":{"url":"http://localhost:5984","user":"admin","pass":"secret","db":"dflnfmcetmhvlmv"},"id":"awest","type":"get","v":1}
+{"pid":10523,"hostname":"work-laptotp","name":"couch_adapter","level":20,"time":1484250155667,"msg":"Document retrieved","type":"get","v":1}

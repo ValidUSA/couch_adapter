@@ -1,0 +1,8 @@
+{
+    "url": "http://localhost:5984",
+    "auth": {
+        "user": "admin",
+        "pass": "secret"
+    },
+    "useSSL": false
+}

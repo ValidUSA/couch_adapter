@@ -31,7 +31,6 @@ describe("Structural Tests", function () {
         assert.isObject(adapter);
         assert.isFunction(adapter.get);
         assert.isFunction(adapter.post);
-        assert.isFunction(adapter.put);
         assert.isFunction(adapter.delete);
         assert.isFunction(adapter.getAll);
     });
@@ -51,7 +50,8 @@ describe("Structural Tests", function () {
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            get: testFunction
+            get: testFunction,
+            logLevel: "debug"
         };
         let adapter = couchAdapter(config);
         adapter.get("12345")

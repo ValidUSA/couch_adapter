@@ -9,7 +9,7 @@
     "lint:jshint": "jshint ./src/ && jshint ./index.js",
     "lint:jscs": "jscs ./src/ && jscs ./index.js",
     "lint:testJscs": "jscs ./test/",
-    "lint:testJshint": "jshint ./test/"    
+    "lint:testJshint": "jshint ./test/"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,9 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "node-uuid": "^1.4.7",
+    "randomstring": "^1.1.5"
   },
   "dependencies": {
     "lodash": "^4.17.4",

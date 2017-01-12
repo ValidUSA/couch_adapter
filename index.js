@@ -4,7 +4,6 @@ const pino = require("pino"),
       fs = require("fs"),
       defaultGet = require("./src/get.js"),
       defaultDelete = require("./src/delete.js"),
-      defaultPut = require("./src/put.js"),
       defaultGetAll = require("./src/get_all.js"),
       defaultPost = require("./src/post.js");
 let logDir = process.env.LOG_DIR || "./",
@@ -24,10 +23,11 @@ module.exports = function ({
     db = "",
     get = defaultGet,
     deleteId = defaultDelete,
-    put = defaultPut,
     getAll = defaultGetAll,
-    post = defaultPost
+    post = defaultPost,
+    logLevel = "info"
 } = {}) {
+    logger.level = logLevel;
     logger.debug("Begin couch_adapter constructor.");
     let config = {
         url: url,
@@ -51,12 +51,6 @@ module.exports = function ({
                 type: "get"
             }), id);
         },
-        put: (doc) => {
-            logger.debug(doc, "Perform Put");
-            return put(config, logger.child({
-                type: "put"
-            }), doc);
-        },
         post: (doc) => {
             logger.debug(doc, "Perform Post");
             return post(config, logger.child({
@@ -66,13 +60,15 @@ module.exports = function ({
         delete: (id) => {
             logger.debug(id, "Perform Delete");
             return deleteId(config, logger.child({
-                type: "put"
+                type: "delete"
             }), id);
         },
-        getAll: () => {
+        getAll: (skip = 0, limit = 50) => {
+            config.limit = limit;
+            config.skip = skip;
             logger.debug("Perform GetAll");
             return getAll(config, logger.child({
-                type: "put"
+                type: "getAll"
             }));
         }
     };
