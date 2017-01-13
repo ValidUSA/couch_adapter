@@ -2,11 +2,10 @@
 
 const pino = require("pino"),
       fs = require("fs"),
-      get = require("./src/get.js"),
-      deleteId = require("./src/delete.js"),
-      put = require("./src/put.js"),
-      getAll = require("./src/get_all.js"),
-      post = require("./src/post.js");
+      defaultGet = require("./src/get.js"),
+      defaultDelete = require("./src/delete.js"),
+      defaultGetAll = require("./src/get_all.js"),
+      defaultPost = require("./src/post.js");
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter.log",
     logger = pino({
@@ -17,12 +16,18 @@ let logDir = process.env.LOG_DIR || "./",
     couchPass = process.env.COUCH_PASS || "",
     couchUser = process.env.COUCH_USER || "";
 
-module.export = function ({
+module.exports = function ({
     url = couchUrl,
     user = couchUser,
     pass = couchPass,
-    db = ""
+    db = "",
+    get = defaultGet,
+    deleteId = defaultDelete,
+    getAll = defaultGetAll,
+    post = defaultPost,
+    logLevel = "info"
 } = {}) {
+    logger.level = logLevel;
     logger.debug("Begin couch_adapter constructor.");
     let config = {
         url: url,
@@ -46,12 +51,6 @@ module.export = function ({
                 type: "get"
             }), id);
         },
-        put: (doc) => {
-            logger.debug(doc, "Perform Put");
-            return put(config, logger.child({
-                type: "put"
-            }), doc);
-        },
         post: (doc) => {
             logger.debug(doc, "Perform Post");
             return post(config, logger.child({
@@ -61,14 +60,16 @@ module.export = function ({
         delete: (id) => {
             logger.debug(id, "Perform Delete");
             return deleteId(config, logger.child({
-                type: "put"
+                type: "delete"
             }), id);
         },
-        getAll: () => {
+        getAll: (skip = 0, limit = 50) => {
+            config.limit = limit;
+            config.skip = skip;
             logger.debug("Perform GetAll");
             return getAll(config, logger.child({
-                type: "put"
+                type: "getAll"
             }));
         }
     };
-}
+};
