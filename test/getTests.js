@@ -2,6 +2,7 @@
 
 const chai = require("chai"),
       assert = chai.assert,
+      expect = chai.expect,
       fs = require("fs"),
       nano = require("nano"),
       prom = require("nano-promises"),
@@ -24,7 +25,9 @@ let logDir = process.env.LOG_DIR || "./",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput));
+    fs.createWriteStream(logOutput, {
+        flags: "r+"
+    }));
 // set logger level
 logger.level = "debug";
 // database setup
@@ -82,13 +85,26 @@ describe("get tests", function () {
             pass: "secret",
             db: dbName
         };
+
         return getMethod(configValues, logger.child({
             type: "get"
-        }), "HillbillyHitchcock").then((body) => {
-            assert.isTrue(body._id === "HillbillyHitchcock");
-        }).catch((error) => {
-            assert.isTrue(error.error === "not_found");
+        }), "HillbillyHitchcock").catch((err) => {
+            assert.isTrue(err === "not_found");
         });
+    });
+
+    it("throws a invalid_id error when id undefined", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "secret",
+            db: dbName
+        };
+        expect(function () {
+                getMethod(configValues, logger.child({
+                    type: "get"
+                }));
+            }).to.throw("invalid_id");
     });
 
     after(function (done) {

@@ -7,3 +7,4 @@ build/
 release/
 results.txt
 couch_adapter.log
+coverage/

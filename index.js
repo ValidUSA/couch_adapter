@@ -11,7 +11,9 @@ let logDir = process.env.LOG_DIR || "./",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput)),
+    fs.createWriteStream(logOutput, {
+        flags: "r+"
+    })),
     couchUrl = process.env.COUCH_URL || "",
     couchPass = process.env.COUCH_PASS || "",
     couchUser = process.env.COUCH_USER || "";
@@ -36,8 +38,20 @@ module.exports = function ({
         db: db
     };
     if (config.db === "") {
-        logger.error("Invalid db", config);
-        throw new Error("Invalid db");
+        logger.error("invalid_db", config);
+        throw new Error("invalid_db");
+    }
+    if (config.url === "") {
+        logger.error("invalid_url", config);
+        throw new Error("invalid_url");
+    }
+    if (config.user === "") {
+        logger.error("invalid_user", config);
+        throw new Error("invalid_user");
+    }
+    if (config.pass === "") {
+        logger.error("invalid_pass or your security sucks", config);
+        throw new Error("invalid_pass");
     }
     logger.info({
         config: config

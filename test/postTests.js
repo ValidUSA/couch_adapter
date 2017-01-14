@@ -23,11 +23,13 @@ const chai = require("chai"),
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter.log",
     logger = pino({
-        name: "couch_adapter"
+        name: "couch_adapter",
+        level: "debug"
     },
-    fs.createWriteStream(logOutput));
-// set logger level
-logger.level = "debug";
+    fs.createWriteStream(logOutput, {
+        flags: "r+"
+    }));
+
 // database setup
 const dbSetup = function (configSettings) {
     let url = urlBuilder(configSettings);

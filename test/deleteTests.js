@@ -25,7 +25,9 @@ let logDir = process.env.LOG_DIR || "./",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput));
+    fs.createWriteStream(logOutput, {
+        flags: "r+"
+    }));
 // set logger level
 logger.level = "debug";
 // database setup

@@ -3,12 +3,11 @@
 const nano = require("nano"),
       prom = require("nano-promises"),
       urlBuilder = require("./url_builder.js"),
+      sanitizeConfig = require("./sanitize_config.js"),
       getBody = (arr) => arr[0];
 
 module.exports = function (config, logger) {
-    logger.debug({
-        config: config
-    }, "Begin GetAll Function");
+    logger.debug("Begin GetAll Function");
     let dbConfig = {
         url: config.url,
         auth: {
@@ -28,7 +27,8 @@ module.exports = function (config, logger) {
         logger.debug("Docs Retrieved");
         return getBody(body).rows;
     }).catch((err) => {
-        logger.debug("An error occurred listing contents of {$1} db", config.db);
+        logger.error("An error occurred listing contents of {$1} db", config.db);
+        logger.error("Configuration:", sanitizeConfig(config));
         throw err;
     });
 };

@@ -3,13 +3,11 @@
 const nano = require("nano"),
       prom = require("nano-promises"),
       urlBuilder = require("./url_builder.js"),
+      sanitizeConfig = require("./sanitize_config.js"),
       getBody = (arr) => arr[0];
 
 module.exports = function (config, logger, id) {
-    logger.debug({
-        config: config,
-        id: id
-    }, "Begin Delete Function");
+    logger.debug("Begin Delete Function");
     let dbConfig = {
         url: config.url,
         auth: {
@@ -25,7 +23,9 @@ module.exports = function (config, logger, id) {
         doc._deleted = true;
         return db.insert(body.doc);
     }).catch((err) => {
-        logger.debug("An error occurred during deletion");
+        logger.error("An error occurred during deletion");
+        logger.error("Error Message: {$1}", err.error);
+        logger.error("Configuration: ", sanitizeConfig(config));
         return err;
     });
 };

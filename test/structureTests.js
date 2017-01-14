@@ -42,7 +42,40 @@ describe("Structural Tests", function () {
         };
         expect(function () {
             couchAdapter(config);
-        }).to.throw("Invalid db");
+        }).to.throw("invalid_db");
+    });
+    it("throws an error when no url is passed and no environment variable is set", function () {
+        let config = {
+            user: "admin",
+            pass: "somepass",
+            db: "users"
+        };
+        process.env.COUCH_URL = "";
+        expect(function () {
+            couchAdapter(config);
+        }).to.throw("invalid_url");
+    });
+    it("throws an error when no user is passed and no environment variable is set", function () {
+        let config = {
+            url: "http://test.test.com",
+            pass: "somepass",
+            db: "users"
+        };
+        process.env.COUCH_USER = "";
+        expect(function () {
+            couchAdapter(config);
+        }).to.throw("invalid_user");
+    });
+    it("throws an error when no pass is passed and no environment variable is set", function () {
+        let config = {
+            url: "http://test.test.com",
+            user: "admin",
+            db: "users"
+        };
+        process.env.COUCH_PASS = "";
+        expect(function () {
+            couchAdapter(config);
+        }).to.throw("invalid_pass");
     });
     it("calls passed function", function () {
         let config = {

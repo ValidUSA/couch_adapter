@@ -3,7 +3,8 @@
 const nano = require("nano"),
       prom = require("nano-promises"),
       getBody = (arr) => arr[0],
-      urlBuilder = require("./url_builder.js");
+      urlBuilder = require("./url_builder.js"),
+      sanitizeConfig = require("./sanitize_config.js");
 
 module.exports = function (config, logger, doc) {
     logger.debug("Begin Post Function");
@@ -39,7 +40,9 @@ module.exports = function (config, logger, doc) {
             return body;
         }
     }).catch((err)=> {
-        logger.debug("Second Insert Failed", err);
+        logger.error("Insert Failed");
+        logger.error("Error Message: {$1}", err.error);
+        logger.error("Configuration:", sanitizeConfig(config));
         throw err;
     });
 };
