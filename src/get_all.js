@@ -27,7 +27,7 @@ module.exports = function (config, logger) {
         logger.debug("Docs Retrieved");
         return getBody(body).rows;
     }).catch((err) => {
-        logger.error("An error occurred listing contents of {$1} db", config.db);
+        logger.error(`An error occurred listing contents of ${config.db} db1`);
         logger.error("Configuration:", sanitizeConfig(config));
         throw err;
     });

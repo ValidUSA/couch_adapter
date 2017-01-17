@@ -5,14 +5,22 @@ const pino = require("pino"),
       defaultGet = require("./src/get.js"),
       defaultDelete = require("./src/delete.js"),
       defaultGetAll = require("./src/get_all.js"),
-      defaultPost = require("./src/post.js");
+      defaultPost = require("./src/post.js"),
+      fixLength = (val) => {
+        if (val && val.toString().length < 2) {
+            return `0${val}`;
+        } else {
+            return val.toString();
+        }
+    };
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    todaysDate = new Date(),
+    logOutput = logDir + `couch_adaptor_${fixLength(todaysDate.getMonth() + 1)}${fixLength(todaysDate.getDate())}${todaysDate.getFullYear()}.log`,
     logger = pino({
         name: "couch_adapter"
     },
     fs.createWriteStream(logOutput, {
-        flags: "r+"
+        flags: "a+"
     })),
     couchUrl = process.env.COUCH_URL || "",
     couchPass = process.env.COUCH_PASS || "",
@@ -84,6 +92,17 @@ module.exports = function ({
             return getAll(config, logger.child({
                 type: "getAll"
             }));
+        },
+        getVersion: () => {
+            return process.env.npm_package_version;
+        },
+        logLevel: (level) => {
+            if (typeof level === "undefined") {
+                return logger.level;
+            } else {
+                logger.level = level;
+                return logger.level;
+            }
         }
     };
 };

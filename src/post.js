@@ -21,8 +21,12 @@ module.exports = function (config, logger, doc) {
         logger.debug("Initial Insert Successful");
         return "Success";
     }).catch((reason) => {
-        logger.debug("Initial Insert Failed, Checking Revision");
-        return db.head(doc._id);
+        if (reason.message === "Document update conflict.") {
+            logger.debug("Initial Insert Failed, Checking Revision");
+            return db.head(doc._id);
+        } else {
+            throw reason;
+        }
     }).then((header) => {
         if (header !== "Success") {
             logger.debug("Trying to insert with rev: ", header[1].etag.replace(/"/g, ""));
@@ -41,7 +45,7 @@ module.exports = function (config, logger, doc) {
         }
     }).catch((err)=> {
         logger.error("Insert Failed");
-        logger.error("Error Message: {$1}", err.error);
+        logger.error(`Error Message: ${err.message}`);
         logger.error("Configuration:", sanitizeConfig(config));
         throw err;
     });

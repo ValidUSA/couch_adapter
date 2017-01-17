@@ -21,13 +21,11 @@ const chai = require("chai"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    logOutput = logDir + "couch_adapter_getTests.log",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput, {
-        flags: "r+"
-    }));
+    fs.createWriteStream(logOutput));
 // set logger level
 logger.level = "debug";
 // database setup
@@ -89,7 +87,7 @@ describe("get tests", function () {
         return getMethod(configValues, logger.child({
             type: "get"
         }), "HillbillyHitchcock").catch((err) => {
-            assert.isTrue(err === "not_found");
+            assert.isTrue(err.message === "not_found");
         });
     });
 
@@ -105,6 +103,37 @@ describe("get tests", function () {
                     type: "get"
                 }));
             }).to.throw("invalid_id");
+    });
+
+    it("throws invalid_db error when database doesn't exist", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "secret",
+            db: "qqqqqqqq"
+        };
+        getMethod(configValues, logger.child({
+                    type: "get"
+                }), "awest").catch((err) => {
+                    assert.isTrue(err.message === "invalid_db");
+                }).catch((err) => {
+                    // do nothing but get rid of warning because i'm tests.. i don't care
+                });
+    });
+    it("throws error when config is not correct", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "hoopla",
+            db: dbName
+        };
+        getMethod(configValues, logger.child({
+                    type: "get"
+                }), "awest").catch((err) => {
+                    assert.isTrue(err.message === "Name or password is incorrect.");
+                }).catch((err) => {
+                    // do nothing but get rid of warning because i'm tests.. i don't care
+                });
     });
 
     after(function (done) {

@@ -21,14 +21,12 @@ const chai = require("chai"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    logOutput = logDir + "couch_adapter_postTests.log",
     logger = pino({
         name: "couch_adapter",
         level: "debug"
     },
-    fs.createWriteStream(logOutput, {
-        flags: "r+"
-    }));
+    fs.createWriteStream(logOutput));
 
 // database setup
 const dbSetup = function (configSettings) {
@@ -92,6 +90,25 @@ describe("Post Tests", function ()  {
         }).then((doc) => {
             assert.isTrue(doc._id === "awest");
             assert.isTrue(doc.test === "Value");
+        });
+    });
+
+    it("Throws an errror when config is wrong", function (){
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "hooplah",
+            db: dbName
+        };
+        awest.test = "Value";
+        return postMethod(configValues, logger.child({
+            type: "post"
+        }), awest).then((result) => {
+            return getMethod(configValues, logger.child({
+                type: "get"
+            }), "awest");
+        }).catch((error) => {
+            assert.isTrue(error.message === "Name or password is incorrect.");
         });
     });
 

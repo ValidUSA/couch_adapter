@@ -21,13 +21,11 @@ const chai = require("chai"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    logOutput = logDir + "couch_adapter_deleteTests.log",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput, {
-        flags: "r+"
-    }));
+    fs.createWriteStream(logOutput));
 // set logger level
 logger.level = "debug";
 // database setup
@@ -78,7 +76,43 @@ describe("Delete Tests", function () {
                 type: "get"
             }), "awest");
         }).catch((error) => {
-            assert.isTrue(error.error === "not_found");
+            assert.isTrue(error.message === "not_found");
+        });
+    });
+
+    it("throws an error when record does not exist", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "secret",
+            db: dbName
+        };
+        return deleteMethod(configValues, logger.child({
+            type: "delete"
+        }), "HoraceNight").then((result) => {
+            return getMethod(configValues, logger.child({
+                type: "get"
+            }), "awest");
+        }).catch((error) => {
+            assert.isTrue(error.message === "not_found");
+        });
+    });
+
+    it("throws an error when cannot connect", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "hoopla",
+            db: dbName
+        };
+        return deleteMethod(configValues, logger.child({
+            type: "delete"
+        }), "ckent").then((result) => {
+            return getMethod(configValues, logger.child({
+                type: "get"
+            }), "skent");
+        }).catch((error) => {
+            assert.isTrue(error.message === "Name or password is incorrect.");
         });
     });
 

@@ -29,12 +29,12 @@ module.exports = function (config, logger, id) {
     .catch((err) => {
         if (err.error === "not_found") {
             logger.debug("Record not found.");
-            return new Error("not_found");
+            throw new Error("not_found");
         } else {
             logger.error("Error retrieving document");
-            logger.error("Error Mesage: {$1}", err.error);
+            logger.error(`Error Mesage: ${err.mesage}`);
             logger.error("Configuration: ", sanitizeConfig(config));
-            return new Error(err.error);
+            throw new Error(err.message);
         }
     });
 };

@@ -20,13 +20,11 @@ const chai = require("chai"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    logOutput = logDir + "couch_adapter_getAllTests.log",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput, {
-        flags: "r+"
-    }));
+    fs.createWriteStream(logOutput));
 // set logger level
 logger.level = "debug";
 // database setup
@@ -115,6 +113,22 @@ describe("get all tests", function () {
             assert.isTrue(result[0].id === "jtest");
         }).catch((error) => {
             console.log(error);
+        });
+    });
+
+    it("throws an error when configuration is incorrect", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "hooplah",
+            db: dbName,
+            limit: 1,
+            skip: 2
+        };
+        return getAllMethod(configValues, logger.child({
+            type: "get"
+        })).catch((error) => {
+            assert.isTrue(error.message === "Name or password is incorrect.");
         });
     });
 
