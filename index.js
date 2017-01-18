@@ -15,7 +15,7 @@ const pino = require("pino"),
     };
 let logDir = process.env.LOG_DIR || "./",
     todaysDate = new Date(),
-    logOutput = logDir + `couch_adaptor_${fixLength(todaysDate.getMonth() + 1)}${fixLength(todaysDate.getDate())}${todaysDate.getFullYear()}.log`,
+    logOutput = logDir + `couch_adapter_${fixLength(todaysDate.getMonth() + 1)}${fixLength(todaysDate.getDate())}${todaysDate.getFullYear()}.log`,
     logger = pino({
         name: "couch_adapter"
     },

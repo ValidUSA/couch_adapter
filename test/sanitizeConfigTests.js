@@ -12,16 +12,14 @@ describe("sanitize config tests", function () {
             pass: "abcdefghijk"
         };
         let newConfig = sanitizeConfig(config);
-        assert.isTrue(config.pass.length === newConfig.pass.length);
-        assert.isTrue(newConfig.pass === "***********");
+        assert.isTrue(newConfig.pass === "*******");
     });
     it("changes username to string of asteriks of the same length", function () {
         let config = {
             user: "abcdefghijk"
         };
         let newConfig = sanitizeConfig(config);
-        assert.isTrue(config.user.length === newConfig.user.length);
-        assert.isTrue(newConfig.user === "***********");
+        assert.isTrue(newConfig.user === "*******");
     });
     it("changes username and password to string of asteriks of the same length", function () {
         let config = {
@@ -29,10 +27,8 @@ describe("sanitize config tests", function () {
             pass: "abcdefghijk"
         };
         let newConfig = sanitizeConfig(config);
-        assert.isTrue(config.user.length === newConfig.user.length);
-        assert.isTrue(newConfig.user === "***********");
-        assert.isTrue(config.pass.length === newConfig.pass.length);
-        assert.isTrue(newConfig.pass === "***********");
+        assert.isTrue(newConfig.user === "*******");
+        assert.isTrue(newConfig.pass === "*******");
     });
     it("changes username and password that reside in object", function () {
         let config = {
@@ -42,10 +38,9 @@ describe("sanitize config tests", function () {
             }
         };
         let newConfig = sanitizeConfig(config);
-        assert.isTrue(config.auth.user.length === newConfig.auth.user.length);
-        assert.isTrue(newConfig.auth.user === "***********");
-        assert.isTrue(config.auth.pass.length === newConfig.auth.pass.length);
-        assert.isTrue(newConfig.auth.pass === "***********");
+
+        assert.isTrue(newConfig.auth.user === "*******");
+        assert.isTrue(newConfig.auth.pass === "*******");
     });
     it("goes even deeper", function () {
         let config = {
@@ -61,10 +56,8 @@ describe("sanitize config tests", function () {
             }
         };
         let newConfig = sanitizeConfig(config);
-        assert.isTrue(config.auth.completely.uneccessary.depth.user.length === newConfig.auth.completely.uneccessary.depth.user.length);
-        assert.isTrue(newConfig.auth.completely.uneccessary.depth.user === "***********");
-        assert.isTrue(config.auth.completely.uneccessary.depth.pass.length === newConfig.auth.completely.uneccessary.depth.pass.length);
-        assert.isTrue(newConfig.auth.completely.uneccessary.depth.pass === "***********");
+        assert.isTrue(newConfig.auth.completely.uneccessary.depth.user === "*******");
+        assert.isTrue(newConfig.auth.completely.uneccessary.depth.pass === "*******");
     });
     it("does not change object without user, pass, username, password, or pwd", function () {
         let config = {
@@ -82,15 +75,10 @@ describe("sanitize config tests", function () {
             pwd: "abcdefghijk"
         };
         let newConfig = sanitizeConfig(config);
-        assert.isTrue(config.user.length === newConfig.user.length);
-        assert.isTrue(newConfig.user === "***********");
-        assert.isTrue(config.pass.length === newConfig.pass.length);
-        assert.isTrue(newConfig.pass === "***********");
-        assert.isTrue(config.username.length === newConfig.username.length);
-        assert.isTrue(newConfig.username === "***********");
-        assert.isTrue(config.password.length === newConfig.password.length);
-        assert.isTrue(newConfig.password === "***********");
-        assert.isTrue(config.pwd.length === newConfig.pwd.length);
-        assert.isTrue(newConfig.pwd === "***********");
+        assert.isTrue(newConfig.user === "*******");
+        assert.isTrue(newConfig.pass === "*******");
+        assert.isTrue(newConfig.username === "*******");
+        assert.isTrue(newConfig.password === "*******");
+        assert.isTrue(newConfig.pwd === "*******");
     });
 });

@@ -203,4 +203,19 @@ describe("Structural Tests", function () {
         assert.isTrue(adapter.logLevel() === "debug");
         assert.isTrue(adapter.logLevel("info") === "info");
     });
+    it("tests whether i can do things on constuction", function () {
+        let config = {
+            db: "users",
+            user: "admin",
+            pass: "somepass",
+            url: "http://test.test.com",
+            get: testFunction,
+            logLevel: "debug"
+        };
+        couchAdapter(config).get("12345").then((result) => {
+            assert.isTrue(result.id === "12345");
+        }).catch((err) => {
+            console.log(err);
+        });
+    });
 });

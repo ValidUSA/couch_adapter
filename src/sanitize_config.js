@@ -8,7 +8,7 @@ const sanitize = function (config) {
         if ((typeof config[prop] === "object") && (config[prop] !== null)) {
             sanitize(config[prop]);
         } else if (aliases.indexOf(prop.toUpperCase()) >= 0) { // if we detect any of the aliases, we can perform the swap.
-            config[prop] =  new Array(config[prop].length + 1).join("*");
+            config[prop] =  "*******"; // per Matt - Static value is better than exact length.
         }
     }
     return config;
