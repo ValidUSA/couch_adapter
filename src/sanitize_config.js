@@ -3,7 +3,7 @@
 const aliases = ["PASS", "USER", "PWD", "PASSWORD", "USERNAME"];
 
 const sanitize = function (config) {
-    for (let prop in config) {
+    for (let prop of Object.keys(config)) {
         // first check if property is an object.  If it is we need to go deeper!
         if ((typeof config[prop] === "object") && (config[prop] !== null)) {
             sanitize(config[prop]);
