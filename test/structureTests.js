@@ -178,6 +178,22 @@ describe("Structural Tests", function () {
             assert.isTrue(result.doc.id === "12345");
         });
     });
+    it("Calls update function", function () {
+        let config = {
+            db: "users",
+            user: "admin",
+            pass: "somepass",
+            url: "http://test.test.com",
+            update: testPostFunction,
+            logLevel: "debug"
+        };
+        let adapter = couchAdapter(config);
+        adapter.update({
+            id: "12345"
+        }).then((result) => {
+            assert.isTrue(result.doc.id === "12345");
+        });
+    });
     it("gets correct version number", function () {
         let config = {
             db: "users",
