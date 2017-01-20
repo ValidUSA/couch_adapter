@@ -7,7 +7,7 @@ const nano = require("nano"),
       getBody = (arr) => arr[0];
 
 module.exports = function (config, logger, id) {
-    logger.debug("Begin Get Function");
+    logger.debug("Begin Read Function");
     let dbConfig = {
         url: config.url,
         auth: {
@@ -32,7 +32,7 @@ module.exports = function (config, logger, id) {
             throw new Error("not_found");
         } else {
             logger.error("Error retrieving document");
-            logger.error(`Error Mesage: ${err.mesage}`);
+            logger.error(`Error Mesage: ${err.reason}`);
             logger.error("Configuration: ", sanitizeConfig(config));
             throw new Error(err.message);
         }

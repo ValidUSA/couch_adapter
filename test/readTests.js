@@ -14,14 +14,14 @@ const chai = require("chai"),
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      getMethod = require("../src/get.js"),
+      readMethod = require("../src/read.js"),
       pino = require("pino"),
       awest = require("./TestData/adam_west.json"),
       ckent = require("./TestData/clark_kent.json"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter_getTests.log",
+    logOutput = logDir + "couch_adapter_readTests.log",
     logger = pino({
         name: "couch_adapter"
     },
@@ -29,7 +29,7 @@ let logDir = process.env.LOG_DIR || "./",
 // set logger level
 logger.level = "debug";
 // database setup
-const dbSetup = function (configSettings) {
+const readDbSetup = function (configSettings) {
     let url = urlBuilder(configSettings);
     let target = prom(nano(url));
     return target.db.create(dbName).then((body) => {
@@ -40,7 +40,7 @@ const dbSetup = function (configSettings) {
             return db.insert(jtest);
         });
     }).catch((err) => {
-        console.log(err);
+        // console.log(err.request.body._id);
         return err;
     });
 };
@@ -54,23 +54,23 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe("get tests", function () {
+describe(`read tests on ${dbName}`, function () {
     before(function (done) {
         this.timeout(5000);
-        dbSetup(config).then((result) => {
+        readDbSetup(config).then((result) => {
             done();
         });
     });
 
-    it("gets the appropriate record", function () {
+    it("reads the appropriate record", function () {
         const configValues = {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
             db: dbName
         };
-        return getMethod(configValues, logger.child({
-            type: "get"
+        return readMethod(configValues, logger.child({
+            type: "read"
         }), "awest").then((result)=> {
             assert.isTrue(result._id === "awest");
         });
@@ -84,8 +84,8 @@ describe("get tests", function () {
             db: dbName
         };
 
-        return getMethod(configValues, logger.child({
-            type: "get"
+        return readMethod(configValues, logger.child({
+            type: "read"
         }), "HillbillyHitchcock").catch((err) => {
             assert.isTrue(err.message === "not_found");
         });
@@ -99,8 +99,8 @@ describe("get tests", function () {
             db: dbName
         };
         expect(function () {
-                getMethod(configValues, logger.child({
-                    type: "get"
+                readMethod(configValues, logger.child({
+                    type: "read"
                 }));
             }).to.throw("invalid_id");
     });
@@ -112,12 +112,12 @@ describe("get tests", function () {
             pass: "secret",
             db: "qqqqqqqq"
         };
-        getMethod(configValues, logger.child({
-                    type: "get"
+        readMethod(configValues, logger.child({
+                    type: "read"
                 }), "awest").catch((err) => {
                     assert.isTrue(err.message === "invalid_db");
                 }).catch((err) => {
-                    // do nothing but get rid of warning because i'm tests.. i don't care
+                    // do nothing but read rid of warning because i'm tests.. i don't care
                 });
     });
     it("throws error when config is not correct", function () {
@@ -127,12 +127,12 @@ describe("get tests", function () {
             pass: "hoopla",
             db: dbName
         };
-        getMethod(configValues, logger.child({
-                    type: "get"
+        readMethod(configValues, logger.child({
+                    type: "read"
                 }), "awest").catch((err) => {
                     assert.isTrue(err.message === "Name or password is incorrect.");
                 }).catch((err) => {
-                    // do nothing but get rid of warning because i'm tests.. i don't care
+                    // do nothing but read rid of warning because i'm tests.. i don't care
                 });
     });
 

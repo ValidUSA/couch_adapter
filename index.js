@@ -2,10 +2,11 @@
 
 const pino = require("pino"),
       fs = require("fs"),
-      defaultGet = require("./src/get.js"),
+      defaultRead = require("./src/read.js"),
       defaultDelete = require("./src/delete.js"),
-      defaultGetAll = require("./src/get_all.js"),
-      defaultPost = require("./src/post.js"),
+      defaultReadBulk = require("./src/read_bulk.js"),
+      defaultCreate = require("./src/create.js"),
+      defaultUpdate = require("./src/update.js"),
       fixLength = (val) => {
         if (val && val.toString().length < 2) {
             return `0${val}`;
@@ -31,10 +32,11 @@ module.exports = function ({
     user = couchUser,
     pass = couchPass,
     db = "",
-    get = defaultGet,
+    read = defaultRead,
     deleteId = defaultDelete,
-    getAll = defaultGetAll,
-    post = defaultPost,
+    readBulk = defaultReadBulk,
+    create = defaultCreate,
+    update = defaultUpdate,
     logLevel = "info"
 } = {}) {
     logger.level = logLevel;
@@ -67,16 +69,16 @@ module.exports = function ({
         "couch_adapter constructed.");
     logger.debug("End couch_adapter constructor.");
     return {
-        get: (id) => {
-            logger.debug(id, "Perform Get");
-            return get(config, logger.child({
-                type: "get"
+        read: (id) => {
+            logger.debug(id, "Perform Read");
+            return read(config, logger.child({
+                type: "read"
             }), id);
         },
-        post: (doc) => {
-            logger.debug(doc, "Perform Post");
-            return post(config, logger.child({
-                type: "post"
+        create: (doc) => {
+            logger.debug(doc, "Perform Create");
+            return create(config, logger.child({
+                type: "Create"
             }), doc);
         },
         delete: (id) => {
@@ -85,16 +87,23 @@ module.exports = function ({
                 type: "delete"
             }), id);
         },
-        getAll: (skip = 0, limit = 50) => {
+        readBulk: (skip = 0, limit = 50) => {
             config.limit = limit;
             config.skip = skip;
-            logger.debug("Perform GetAll");
-            return getAll(config, logger.child({
-                type: "getAll"
+            logger.debug("Perform Read Bulk");
+            return readBulk(config, logger.child({
+                type: "read bulk"
             }));
         },
+        update: (doc) => {
+            logger.debug(doc, "Perform Update");
+            return update(config, logger.child({
+                type: "update"
+            }), doc);
+        },
         getVersion: () => {
-            return process.env.npm_package_version;
+            let version = process.env.npm_package_version || require("./package.json").version;
+            return version;
         },
         logLevel: (level) => {
             if (typeof level === "undefined") {

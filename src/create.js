@@ -7,7 +7,7 @@ const nano = require("nano"),
       sanitizeConfig = require("./sanitize_config.js");
 
 module.exports = function (config, logger, doc) {
-    logger.debug("Begin Post Function");
+    logger.debug("Begin Create Function");
     let dbConfig = {
         url: config.url,
         auth: {

@@ -8,32 +8,34 @@ const chai = require("chai"),
       randomstring = require("randomstring"),
       config = require("./configData/config.json"),
       urlBuilder = require("../src/url_builder.js"),
-      dbName = randomstring.generate({
+      createDbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      postMethod = require("../src/post.js"),
-      getMethod = require("../src/get.js"),
+      createMethod = require("../src/create.js"),
+      readMethod = require("../src/read.js"),
       pino = require("pino"),
-      awest = require("./TestData/adam_west.json"),
-      ckent = require("./TestData/clark_kent.json"),
-      jtest = require("./TestData/jtest.json");
+      createWest = {
+        _id: "awest2",
+        schema: "wadol",
+        encounterId: "12345"
+    };
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter_postTests.log",
+    logOutput = logDir + "couch_adapter_createTests.log",
     logger = pino({
         name: "couch_adapter",
         level: "debug"
     },
     fs.createWriteStream(logOutput));
-
+createWest._id = "awest2";
 // database setup
 const dbSetup = function (configSettings) {
     let url = urlBuilder(configSettings);
     let target = prom(nano(url));
-    return target.db.create(dbName).catch((err) => {
-        console.log(err);
+    return target.db.create(createDbName).catch((err) => {
+        // console.log(err);
         return err;
     });
 };
@@ -41,13 +43,13 @@ const dbSetup = function (configSettings) {
 const dbTeardown = (configSettings) => {
     let url = urlBuilder(configSettings);
     let server = prom(nano(url));
-    return server.db.destroy(dbName).catch((err) => {
+    return server.db.destroy(createDbName).catch((err) => {
         console.log("ERROR DESTROYING DB");
         console.log(err);
     });
 };
 
-describe("Post Tests", function ()  {
+describe(`Create Tests on ${createDbName}`, function ()  {
     before(function (done) {
         this.timeout(5000);
         dbSetup(config).then((result) => {
@@ -60,16 +62,16 @@ describe("Post Tests", function ()  {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
-            db: dbName
+            db: createDbName
         };
-        return postMethod(configValues, logger.child({
-            type: "post"
-        }), awest).then((result) => {
-            return getMethod(configValues, logger.child({
-                type: "get"
-            }), "awest");
+        return createMethod(configValues, logger.child({
+            type: "create"
+        }), createWest).then((result) => {
+            return readMethod(configValues, logger.child({
+                type: "read"
+            }), "awest2");
         }).then((doc) => {
-            assert.isTrue(doc._id === "awest");
+            assert.isTrue(doc._id === "awest2");
         });
     });
 
@@ -78,17 +80,17 @@ describe("Post Tests", function ()  {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
-            db: dbName
+            db: createDbName
         };
-        awest.test = "Value";
-        return postMethod(configValues, logger.child({
-            type: "post"
-        }), awest).then((result) => {
-            return getMethod(configValues, logger.child({
-                type: "get"
-            }), "awest");
+        createWest.test = "Value";
+        return createMethod(configValues, logger.child({
+            type: "create"
+        }), createWest).then((result) => {
+            return readMethod(configValues, logger.child({
+                type: "read"
+            }), "awest2");
         }).then((doc) => {
-            assert.isTrue(doc._id === "awest");
+            assert.isTrue(doc._id === "awest2");
             assert.isTrue(doc.test === "Value");
         });
     });
@@ -98,14 +100,14 @@ describe("Post Tests", function ()  {
             url: "http://localhost:5984",
             user: "admin",
             pass: "hooplah",
-            db: dbName
+            db: createDbName
         };
-        awest.test = "Value";
-        return postMethod(configValues, logger.child({
-            type: "post"
-        }), awest).then((result) => {
-            return getMethod(configValues, logger.child({
-                type: "get"
+        createWest.test = "Value";
+        return createMethod(configValues, logger.child({
+            type: "create"
+        }), createWest).then((result) => {
+            return readMethod(configValues, logger.child({
+                type: "read"
             }), "awest");
         }).catch((error) => {
             assert.isTrue(error.message === "Name or password is incorrect.");

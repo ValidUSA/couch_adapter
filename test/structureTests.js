@@ -66,10 +66,11 @@ describe("Structural Tests", function () {
         };
         let adapter = couchAdapter(config);
         assert.isObject(adapter);
-        assert.isFunction(adapter.get);
-        assert.isFunction(adapter.post);
+        assert.isFunction(adapter.read);
+        assert.isFunction(adapter.create);
         assert.isFunction(adapter.delete);
-        assert.isFunction(adapter.getAll);
+        assert.isFunction(adapter.readBulk);
+        assert.isFunction(adapter.update);
     });
     it ("throws error when no db is passed", function () {
         let config = {
@@ -120,11 +121,11 @@ describe("Structural Tests", function () {
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            get: testFunction,
+            read: testFunction,
             logLevel: "debug"
         };
         let adapter = couchAdapter(config);
-        adapter.get("12345")
+        adapter.read("12345")
         .then((val) => {
             assert.isTrue(val.id === "12345");
         })
@@ -138,11 +139,11 @@ describe("Structural Tests", function () {
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            getAll: testGetAllFunction,
+            readBulk: testGetAllFunction,
             logLevel: "debug"
         };
         let adapter = couchAdapter(config);
-        adapter.getAll(10, 50).then((result) => {
+        adapter.readBulk(10, 50).then((result) => {
             assert.isTrue(result.config.skip === 10);
             assert.isTrue(result.config.limit === 50);
         });
@@ -161,17 +162,17 @@ describe("Structural Tests", function () {
             assert.isTrue(result.id === "12345");
         });
     });
-    it("Calls post function", function () {
+    it("Calls create function", function () {
         let config = {
             db: "users",
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            post: testPostFunction,
+            create: testPostFunction,
             logLevel: "debug"
         };
         let adapter = couchAdapter(config);
-        adapter.post({
+        adapter.create({
             id: "12345"
         }).then((result) => {
             assert.isTrue(result.doc.id === "12345");
@@ -183,7 +184,6 @@ describe("Structural Tests", function () {
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            post: testPostFunction,
             logLevel: "debug"
         };
         let adapter = couchAdapter(config);
@@ -196,7 +196,6 @@ describe("Structural Tests", function () {
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            post: testPostFunction,
             logLevel: "debug"
         };
         let adapter = couchAdapter(config);
@@ -209,10 +208,9 @@ describe("Structural Tests", function () {
             user: "admin",
             pass: "somepass",
             url: "http://test.test.com",
-            get: testFunction,
             logLevel: "debug"
         };
-        couchAdapter(config).get("12345").then((result) => {
+        couchAdapter(config).read("12345").then((result) => {
             assert.isTrue(result.id === "12345");
         }).catch((err) => {
             console.log(err);
