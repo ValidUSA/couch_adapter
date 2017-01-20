@@ -95,7 +95,7 @@ describe(`Create Tests on ${createDbName}`, function ()  {
         });
     });
 
-    it("Throws an errror when config is wrong", function (){
+    it("Throws an errror when config is wrong", function () {
         const configValues = {
             url: "http://localhost:5984",
             user: "admin",
