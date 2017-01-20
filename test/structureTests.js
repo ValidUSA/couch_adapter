@@ -3,7 +3,6 @@
 const chai = require("chai"),
       assert = chai.assert,
       expect = chai.expect,
-      _ = require("lodash"),
       couchAdapter = require("../index.js");
 
 const testFunction = function (config, logger, id) {
