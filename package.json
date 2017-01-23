@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha",
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "lint": "npm run lint:jshint && npm run lint:jscs && npm run lint:testJscs && npm run lint:testJshint",
     "lint:jshint": "jshint ./src/ && jshint ./index.js",
     "lint:jscs": "jscs ./src/ && jscs ./index.js",
@@ -23,12 +24,11 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
-    "node-uuid": "^1.4.7",
     "randomstring": "^1.1.5"
   },
   "dependencies": {
-    "lodash": "^4.17.4",
     "nano": "^6.2.0",
     "nano-promises": "^1.2.0",
     "pino": "^3.1.0"

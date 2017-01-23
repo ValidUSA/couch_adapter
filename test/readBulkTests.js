@@ -8,19 +8,19 @@ const chai = require("chai"),
       randomstring = require("randomstring"),
       config = require("./configData/config.json"),
       urlBuilder = require("../src/url_builder.js"),
-      dbName = randomstring.generate({
+      newdbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      getAllMethod = require("../src/get_all.js"),
+      readBulkMethod = require("../src/read_bulk.js"),
       pino = require("pino"),
       awest = require("./TestData/adam_west.json"),
       ckent = require("./TestData/clark_kent.json"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    logOutput = logDir + "couch_adapter_readBulkTests.log",
     logger = pino({
         name: "couch_adapter"
     },
@@ -31,15 +31,24 @@ logger.level = "debug";
 const dbSetup = function (configSettings) {
     let url = urlBuilder(configSettings);
     let target = prom(nano(url));
-    return target.db.create(dbName).then((body) => {
-        let db = target.db.use(dbName);
+    return target.db.create(newdbName).then((body) => {
+        let db = target.db.use(newdbName);
+        db.list().then((result) => {
+            // console.log(result);
+        });
         return db.insert(awest).then((body) => {
-            return db.insert(ckent);
+            return db.insert(ckent).catch((error)=> {
+                console.log("It was ckent");
+                return error;
+            });
         }).then((body) => {
-            return db.insert(jtest);
+            return db.insert(jtest).catch((error) => {
+                console.log("it was jtest");
+                return error;
+            });
         });
     }).catch((err) => {
-        console.log(err);
+        // console.log(err.request.body._id);
         return err;
     });
 };
@@ -47,13 +56,13 @@ const dbSetup = function (configSettings) {
 const dbTeardown = (configSettings) => {
     let url = urlBuilder(configSettings);
     let server = prom(nano(url));
-    return server.db.destroy(dbName).catch((err) => {
+    return server.db.destroy(newdbName).catch((err) => {
         console.log("ERROR DESTROYING DB");
         console.log(err);
     });
 };
 
-describe("get all tests", function () {
+describe(`read bulk tests on ${newdbName}`, function () {
     before(function (done) {
         this.timeout(5000);
         dbSetup(config).then((result) => {
@@ -66,16 +75,14 @@ describe("get all tests", function () {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
-            db: dbName,
+            db: newdbName,
             limit: 5,
             skip: 0
         };
-        return getAllMethod(configValues, logger.child({
-            type: "get"
+        return readBulkMethod(configValues, logger.child({
+            type: "read bulk"
         })).then((result) => {
-            assert.isTrue(result.length === 3);
-        }).catch((error) => {
-            console.log(error);
+            assert.isTrue(result.rows.length === 3);
         });
     });
 
@@ -84,16 +91,14 @@ describe("get all tests", function () {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
-            db: dbName,
+            db: newdbName,
             limit: 1,
             skip: 0
         };
-        return getAllMethod(configValues, logger.child({
-            type: "get"
+        return readBulkMethod(configValues, logger.child({
+            type: "read bulk"
         })).then((result) => {
-            assert.isTrue(result.length === 1);
-        }).catch((error) => {
-            console.log(error);
+            assert.isTrue(result.rows.length === 1);
         });
     });
 
@@ -102,17 +107,31 @@ describe("get all tests", function () {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
-            db: dbName,
+            db: newdbName,
             limit: 1,
             skip: 2
         };
-        return getAllMethod(configValues, logger.child({
-            type: "get"
+        return readBulkMethod(configValues, logger.child({
+            type: "read bulk"
         })).then((result) => {
-            assert.isTrue(result.length === 1);
-            assert.isTrue(result[0].id === "jtest");
-        }).catch((error) => {
-            console.log(error);
+            assert.isTrue(result.rows.length === 1);
+            assert.isTrue(result.rows[0].id === "jtest");
+        });
+    });
+
+    it("throws an error when configuration is incorrect", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "hooplah",
+            db: newdbName,
+            limit: 1,
+            skip: 2
+        };
+        return readBulkMethod(configValues, logger.child({
+            type: "read bulk"
+        })).catch((error) => {
+            assert.isTrue(error.message === "Name or password is incorrect.");
         });
     });
 

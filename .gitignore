@@ -6,4 +6,6 @@ coverage.html
 build/
 release/
 results.txt
-couch_adapter.log
+couch_adapter*.log
+couch_adaptor*.log
+coverage/

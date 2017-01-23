@@ -2,6 +2,7 @@
 
 const chai = require("chai"),
       assert = chai.assert,
+      expect = chai.expect,
       fs = require("fs"),
       nano = require("nano"),
       prom = require("nano-promises"),
@@ -13,14 +14,14 @@ const chai = require("chai"),
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      getMethod = require("../src/get.js"),
+      readMethod = require("../src/read.js"),
       pino = require("pino"),
       awest = require("./TestData/adam_west.json"),
       ckent = require("./TestData/clark_kent.json"),
       jtest = require("./TestData/jtest.json");
 
 let logDir = process.env.LOG_DIR || "./",
-    logOutput = logDir + "couch_adapter.log",
+    logOutput = logDir + "couch_adapter_readTests.log",
     logger = pino({
         name: "couch_adapter"
     },
@@ -28,7 +29,7 @@ let logDir = process.env.LOG_DIR || "./",
 // set logger level
 logger.level = "debug";
 // database setup
-const dbSetup = function (configSettings) {
+const readDbSetup = function (configSettings) {
     let url = urlBuilder(configSettings);
     let target = prom(nano(url));
     return target.db.create(dbName).then((body) => {
@@ -39,7 +40,7 @@ const dbSetup = function (configSettings) {
             return db.insert(jtest);
         });
     }).catch((err) => {
-        console.log(err);
+        // console.log(err.request.body._id);
         return err;
     });
 };
@@ -53,23 +54,23 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe("get tests", function () {
+describe(`read tests on ${dbName}`, function () {
     before(function (done) {
         this.timeout(5000);
-        dbSetup(config).then((result) => {
+        readDbSetup(config).then((result) => {
             done();
         });
     });
 
-    it("gets the appropriate record", function () {
+    it("reads the appropriate record", function () {
         const configValues = {
             url: "http://localhost:5984",
             user: "admin",
             pass: "secret",
             db: dbName
         };
-        return getMethod(configValues, logger.child({
-            type: "get"
+        return readMethod(configValues, logger.child({
+            type: "read"
         }), "awest").then((result)=> {
             assert.isTrue(result._id === "awest");
         });
@@ -82,13 +83,57 @@ describe("get tests", function () {
             pass: "secret",
             db: dbName
         };
-        return getMethod(configValues, logger.child({
-            type: "get"
-        }), "HillbillyHitchcock").then((body) => {
-            assert.isTrue(body._id === "HillbillyHitchcock");
-        }).catch((error) => {
-            assert.isTrue(error.error === "not_found");
+
+        return readMethod(configValues, logger.child({
+            type: "read"
+        }), "HillbillyHitchcock").catch((err) => {
+            assert.isTrue(err.message === "not_found");
         });
+    });
+
+    it("throws a invalid_id error when id undefined", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "secret",
+            db: dbName
+        };
+        expect(function () {
+                readMethod(configValues, logger.child({
+                    type: "read"
+                }));
+            }).to.throw("invalid_id");
+    });
+
+    it("throws invalid_db error when database doesn't exist", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "secret",
+            db: "qqqqqqqq"
+        };
+        readMethod(configValues, logger.child({
+                    type: "read"
+                }), "awest").catch((err) => {
+                    assert.isTrue(err.message === "invalid_db");
+                }).catch((err) => {
+                    // do nothing but read rid of warning because i'm tests.. i don't care
+                });
+    });
+    it("throws error when config is not correct", function () {
+        const configValues = {
+            url: "http://localhost:5984",
+            user: "admin",
+            pass: "hoopla",
+            db: dbName
+        };
+        readMethod(configValues, logger.child({
+                    type: "read"
+                }), "awest").catch((err) => {
+                    assert.isTrue(err.message === "Name or password is incorrect.");
+                }).catch((err) => {
+                    // do nothing but read rid of warning because i'm tests.. i don't care
+                });
     });
 
     after(function (done) {

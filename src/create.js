@@ -3,10 +3,11 @@
 const nano = require("nano"),
       prom = require("nano-promises"),
       getBody = (arr) => arr[0],
-      urlBuilder = require("./url_builder.js");
+      urlBuilder = require("./url_builder.js"),
+      sanitizeConfig = require("./sanitize_config.js");
 
 module.exports = function (config, logger, doc) {
-    logger.debug("Begin Post Function");
+    logger.debug("Begin Create Function");
     let dbConfig = {
         url: config.url,
         auth: {
@@ -20,8 +21,12 @@ module.exports = function (config, logger, doc) {
         logger.debug("Initial Insert Successful");
         return "Success";
     }).catch((reason) => {
-        logger.debug("Initial Insert Failed, Checking Revision");
-        return db.head(doc._id);
+        if (reason.message === "Document update conflict.") {
+            logger.debug("Initial Insert Failed, Checking Revision");
+            return db.head(doc._id);
+        } else {
+            throw reason;
+        }
     }).then((header) => {
         if (header !== "Success") {
             logger.debug("Trying to insert with rev: ", header[1].etag.replace(/"/g, ""));
@@ -39,7 +44,9 @@ module.exports = function (config, logger, doc) {
             return body;
         }
     }).catch((err)=> {
-        logger.debug("Second Insert Failed", err);
+        logger.error("Insert Failed");
+        logger.error(`Error Message: ${err.message}`);
+        logger.error("Configuration:", sanitizeConfig(config));
         throw err;
     });
 };
