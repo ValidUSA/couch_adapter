@@ -63,10 +63,7 @@ module.exports = function ({
         logger.error("invalid_pass or your security sucks", config);
         throw new Error("invalid_pass");
     }
-    logger.info({
-        config: config
-    },
-        "couch_adapter constructed.");
+    logger.info(`Couch Adapter Constructed for: ${config.db}`);
     logger.debug("End couch_adapter constructor.");
     return {
         read: (id) => {
