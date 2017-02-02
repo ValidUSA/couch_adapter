@@ -59,9 +59,9 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
 
     it("creates a document in a db", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
-            pass: "secret",
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
             db: updateDbName
         };
         return updateMethod(configValues, logger.child({
@@ -71,15 +71,15 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
                 type: "read"
             }), "awest3");
         }).then((doc) => {
-            assert.isTrue(doc._id === "awest3");
+            assert.isTrue(doc.rows[0].id === "awest3");
         });
     });
 
     it("updates a document in a db", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
-            pass: "secret",
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
             db: updateDbName
         };
         updateWest.test = "Value";
@@ -90,15 +90,15 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
                 type: "read"
             }), "awest3");
         }).then((doc) => {
-            assert.isTrue(doc._id === "awest3");
-            assert.isTrue(doc.test === "Value");
+            assert.isTrue(doc.rows[0].id === "awest3");
+            assert.isTrue(doc.rows[0].doc.test === "Value");
         });
     });
 
     it("Throws an errror when config is wrong", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
+            url: config.url,
+            user: config.auth.user,
             pass: "hooplah",
             db: updateDbName
         };

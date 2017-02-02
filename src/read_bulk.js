@@ -20,7 +20,8 @@ module.exports = function (config, logger) {
         params = {
         skip: config.skip,
         limit: config.limit,
-        include_docs: true
+        include_docs: true,
+        startkey: "_"
     };
 
     return db.list(params).then((body) => {
