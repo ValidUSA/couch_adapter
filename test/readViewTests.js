@@ -14,7 +14,7 @@ const chai = require("chai"),
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      readMethod = require("../src/read.js"),
+      readViewMethod = require("../src/read_view.js"),
       pino = require("pino"),
       awest = require("./TestData/adam_west.json"),
       ckent = require("./TestData/clark_kent.json"),
@@ -38,6 +38,16 @@ const readDbSetup = function (configSettings) {
             return db.insert(ckent);
         }).then((body) => {
             return db.insert(jtest);
+        }).then((body) => {
+            return db.insert({
+                views: {
+                    by_TypeOfLicense: {
+                        map: function (doc) {
+                            emit(doc.abbrevTypeOfLicense, doc._id);
+                        }
+                    }
+                }
+            }, "_design/testViews");
         });
     }).catch((err) => {
         // console.log(err.request.body._id);
@@ -54,7 +64,7 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe(`read tests on ${dbName}`, function () {
+describe(`read view tests on ${dbName}`, function () {
     before(function (done) {
         this.timeout(5000);
         readDbSetup(config).then((result) => {
@@ -67,12 +77,14 @@ describe(`read tests on ${dbName}`, function () {
             url: config.url,
             user: config.auth.user,
             pass: config.auth.pass,
-            db: dbName
+            db: dbName,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
-        return readMethod(configValues, logger.child({
+        return readViewMethod(configValues, logger.child({
             type: "read"
-        }), "awest").then((result)=> {
-            assert.isTrue(result.rows[0].id === "awest");
+        }), "ID").then((result)=> {
+            assert.isTrue(result.rows[0].id === "ckent");
         });
     });
 
@@ -81,12 +93,16 @@ describe(`read tests on ${dbName}`, function () {
             url: config.url,
             user: config.auth.user,
             pass: config.auth.pass,
-            db: dbName
+            db: dbName,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
 
-        return readMethod(configValues, logger.child({
+        return readViewMethod(configValues, logger.child({
             type: "read"
-        }), "HillbillyHitchcock").catch((err) => {
+        }), "HillbillyHitchcock").then((body) => {
+            throw new Error ("was_found");
+        }).catch((err) => {
             assert.isTrue(err.message === "not_found");
         });
     });
@@ -96,10 +112,12 @@ describe(`read tests on ${dbName}`, function () {
             url: config.url,
             user: config.auth.user,
             pass: config.auth.pass,
-            db: dbName
+            db: dbName,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
         expect(function () {
-                readMethod(configValues, logger.child({
+                readViewMethod(configValues, logger.child({
                     type: "read"
                 }));
             }).to.throw("invalid_id");
@@ -110,9 +128,11 @@ describe(`read tests on ${dbName}`, function () {
             url: config.url,
             user: config.auth.user,
             pass: config.auth.pass,
-            db: "qqqqqqqq"
+            db: "qqqqqqqq",
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
-        readMethod(configValues, logger.child({
+        readViewMethod(configValues, logger.child({
                     type: "read"
                 }), "awest").catch((err) => {
                     assert.isTrue(err.message === "invalid_db");
@@ -125,9 +145,11 @@ describe(`read tests on ${dbName}`, function () {
             url: config.url,
             user: config.auth.user,
             pass: "hoopla",
-            db: dbName
+            db: dbName,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
-        readMethod(configValues, logger.child({
+        readViewMethod(configValues, logger.child({
                     type: "read"
                 }), "awest").catch((err) => {
                     assert.isTrue(err.message === "Name or password is incorrect.");

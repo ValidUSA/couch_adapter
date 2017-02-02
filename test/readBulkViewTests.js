@@ -13,7 +13,7 @@ const chai = require("chai"),
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      readBulkMethod = require("../src/read_bulk.js"),
+      readBulkMethod = require("../src/read_view_bulk.js"),
       pino = require("pino"),
       awest = require("./TestData/adam_west.json"),
       ckent = require("./TestData/clark_kent.json"),
@@ -46,6 +46,16 @@ const dbSetup = function (configSettings) {
                 console.log("it was jtest");
                 return error;
             });
+        }).then((body) => {
+            return db.insert({
+                views: {
+                    by_TypeOfLicense: {
+                        map: function (doc) {
+                            emit(doc.abbrevTypeOfLicense, doc._id);
+                        }
+                    }
+                }
+            }, "_design/testViews");
         });
     }).catch((err) => {
         // console.log(err.request.body._id);
@@ -62,7 +72,7 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe(`read bulk tests on ${newdbName}`, function () {
+describe(`read bulk view tests on ${newdbName}`, function () {
     before(function (done) {
         this.timeout(5000);
         dbSetup(config).then((result) => {
@@ -77,7 +87,10 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: config.auth.pass,
             db: newdbName,
             limit: 5,
-            skip: 0
+            skip: 0,
+            design: "testViews",
+            view: "by_TypeOfLicense"
+
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -93,7 +106,9 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: config.auth.pass,
             db: newdbName,
             limit: 1,
-            skip: 0
+            skip: 0,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -109,7 +124,9 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: config.auth.pass,
             db: newdbName,
             limit: 1,
-            skip: 2
+            skip: 2,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -126,7 +143,9 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: "hooplah",
             db: newdbName,
             limit: 1,
-            skip: 2
+            skip: 2,
+            design: "testViews",
+            view: "by_TypeOfLicense"
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
