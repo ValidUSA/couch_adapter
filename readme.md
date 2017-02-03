@@ -128,9 +128,9 @@ Note:  Read Bulk does not attach documents to the results.
 ``` JSON
 { 
   "total_rows: 1,
-  "offset: 0,
-  "rows: 
-   [ { "id": "awest", key: "EDL", value: "awest" doc: { }} ] 
+  "offset": 0,
+  "rows": 
+   [ { "id": "awest", "key": "EDL", value: "awest" doc: { }} ] 
 }
 ```
 #### Version Result
