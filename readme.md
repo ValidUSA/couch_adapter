@@ -104,22 +104,22 @@ Retrieves the logLevel of the object.
 #### Create/Update/Delete Result
 ``` JSON
 { 
-  ok: true,
-  id: 'awest2',
-  rev: '1-f371adad4ce4b07c5702f103ae9f0864' 
+  "ok": true,
+  "id": "awest2",
+  "rev": "1-f371adad4ce4b07c5702f103ae9f0864" 
 }
 ```
 
 ##### Read Bulk Result
 ``` JSON
 { 
-  total_rows: 3,
-  offset: 0,
-  rows: 
+  "total_rows": 3,
+  "offset": 0,
+  "rows": 
    [ 
-     { id: 'awest', key: 'EDL', value: 'awest' },
-     { id: 'ckent', key: 'ID', value: 'ckent' },
-     { id: 'jtest', key: 'PDL', value: 'jtest' } 
+     { "id": "awest", "key": "EDL", "value": "awest" },
+     { "id": "ckent", "key": "ID", "value": "ckent" },
+     { "id": "jtest", "key": "PDL", "value": "jtest" } 
    ] 
 }
 ```
@@ -127,22 +127,22 @@ Note:  Read Bulk does not attach documents to the results.
 #### Read Result
 ``` JSON
 { 
-  total_rows: 1,
-  offset: 0,
-  rows: 
-   [ { id: 'awest', key: 'EDL', value: 'awest' doc: [Object]} ] 
+  "total_rows: 1,
+  "offset: 0,
+  "rows: 
+   [ { "id": "awest", key: "EDL", value: "awest" doc: { }} ] 
 }
 ```
 #### Version Result
 ``` JSON
 {
-    version: 1.0.0
+    "version": "1.0.0"
 }
 ```
 #### logLevel Result
 ``` JSON
 {
-    logLevel: "info"
+    "logLevel": "info"
 }
 ```
 # Developers
@@ -150,9 +150,12 @@ Tests require a couch instance to execute.  Configure settings in ./test/configD
 
 Scripts available:  
 
-npm test:  Runs all tests in the /test/ directory
-npm run coverage: generates an instanbul coverage report
-npm run lint:  Performs linting of the files with my style using jshint and jscs
+  * **npm test** :  Runs all tests in the /test/ directory
+
+  * **npm run coverage** : generates an instanbul coverage report
+
+  * **npm run lint** :  Performs linting of the files with my style using jshint and jscs
+
 
 Logs are generaged at either process.env.LOG_DIR or at the root directory of the calling application.
 Logs are generated using PINO, and follow the naming schema:  couch_adapter_MMDDYYYY.log
