@@ -9,3 +9,4 @@ results.txt
 couch_adapter*.log
 couch_adaptor*.log
 coverage/
+npm-debug.log
