@@ -97,7 +97,7 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
             updateMethod(configValues, logger.child({
                 type: "update"
             }), updateWest);
-        }).to.throw("invalid_revision");
+        }).to.throw("invalid_doc_state");
     });
 
     after(function (done) {

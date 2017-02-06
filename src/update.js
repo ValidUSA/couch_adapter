@@ -9,7 +9,7 @@ const nano = require("nano"),
 module.exports = function (config, logger, doc) {
     logger.debug("Begin Update Function");
     if (!doc._rev || doc._rev === "") {
-        throw new Error("invalid_revision");
+        throw new Error("invalid_doc_state");
     }
     let dbConfig = {
         url: config.url,
