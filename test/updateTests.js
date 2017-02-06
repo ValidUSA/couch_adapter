@@ -37,7 +37,7 @@ const dbSetup = function (configSettings) {
     let target = prom(nano(url));
     return target.db.create(updateDbName).then((body) => {
         let db = target.db.use(updateDbName);
-        db.insert(updateWest);
+        return db.insert(updateWest);
     }).catch((err) => {
         // console.log(err);
         return err;
