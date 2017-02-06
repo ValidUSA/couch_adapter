@@ -2,6 +2,7 @@
 
 const chai = require("chai"),
       assert = chai.assert,
+      expect = chai.expect,
       fs = require("fs"),
       nano = require("nano"),
       prom = require("nano-promises"),
@@ -107,6 +108,21 @@ describe(`Create Tests on ${createDbName}`, function ()  {
         }).catch((error) => {
             assert.isTrue(error.message === "Name or password is incorrect.");
         });
+    });
+
+    it ("Throws an error when document has a revision already", function () {
+        const configValues = {
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
+            db: createDbName
+        };
+        createWest._rev = "Value";
+        expect(function () {
+            return createMethod(configValues, logger.child({
+                type: "create"
+            }), createWest);
+        }).to.throw("invalid_doc_state");
     });
 
     after(function (done) {

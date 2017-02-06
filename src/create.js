@@ -17,6 +17,9 @@ module.exports = function (config, logger, doc) {
     },
     url = urlBuilder(dbConfig),
     db = prom(nano(url)).db.use(config.db);
+    if (typeof doc._rev !== "undefined") {
+        throw new Error("invalid_doc_state");
+    }
     return db.insert(doc).then((body) => {
         logger.debug("Insert Successful");
         return getBody(body);

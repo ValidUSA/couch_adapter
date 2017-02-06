@@ -21,10 +21,10 @@ module.exports = function (config, logger, id) {
     if (typeof id === "undefined") {
         throw new Error("invalid_id");
     }
-    if (typeof config.design === "undefined") {
+    if (typeof config.design === "undefined" || !(config.design && typeof config.design === "string")) {
         throw new Error("invalid_design");
     }
-    if (typeof config.view === "undefined") {
+    if (typeof config.view === "undefined" || !(config.view && typeof config.view === "string")) {
         throw new Error("invalid_view");
     }
     return db.view(config.design, config.view, {
