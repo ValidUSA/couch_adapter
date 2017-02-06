@@ -2,6 +2,7 @@
 
 const pino = require("pino"),
       fs = require("fs"),
+      sanitizer = require("./src/sanitize_config.js"),
       defaultRead = require("./src/read.js"),
       defaultReadView = require("./src/read_view.js"),
       defaultDelete = require("./src/delete.js"),
@@ -54,24 +55,24 @@ module.exports = function ({
         design: design
     };
     if (config.db === "") {
-        logger.error("invalid_db", config);
+        logger.error("invalid_db", sanitizer(config));
         throw new Error("invalid_db");
     }
     if (config.url === "") {
-        logger.error("invalid_url", config);
+        logger.error("invalid_url", sanitizer(config));
         throw new Error("invalid_url");
     }
     if (config.user === "") {
-        logger.error("invalid_user", config);
+        logger.error("invalid_user", sanitizer(config));
         throw new Error("invalid_user");
     }
     if (config.pass === "") {
-        logger.error("invalid_pass or your security sucks", config);
+        logger.error("invalid_pass or your security sucks", sanitizer(config));
         throw new Error("invalid_pass");
     }
     if (config.view !== "") {
         if (config.design === "") {
-            logger.error("invalid_design", config);
+            logger.error("invalid_design", sanitizer(config));
             throw new Error("invalid_design");
         }
         if (read === defaultRead) { // Same as above but with Read and ReadView

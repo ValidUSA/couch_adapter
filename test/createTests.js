@@ -85,13 +85,8 @@ describe(`Create Tests on ${createDbName}`, function ()  {
         createWest.test = "Value";
         return createMethod(configValues, logger.child({
             type: "create"
-        }), createWest).then((result) => {
-            return readMethod(configValues, logger.child({
-                type: "read"
-            }), "awest2");
-        }).then((doc) => {
-            assert.isTrue(doc.rows[0].id === "awest2");
-            assert.isTrue(doc.rows[0].doc.test === "Value");
+        }), createWest).catch((error) => {
+            assert.isTrue(error.reason === "Document update conflict.");
         });
     });
 
