@@ -7,7 +7,7 @@ const nano = require("nano"),
       getBody = (arr) => arr[0];
 
 module.exports = function (config, logger, id) {
-    logger.debug("Begin Read Function");
+    logger.debug("Begin ReadViewBulk Function");
     let dbConfig = {
         url: config.url,
         auth: {
@@ -18,30 +18,24 @@ module.exports = function (config, logger, id) {
     url = urlBuilder(dbConfig),
     server = prom(nano(url)),
     db = server.db.use(config.db);
-    if (typeof id === "undefined") {
-        throw new Error("invalid_id");
+    if (typeof config.design === "undefined") {
+        throw new Error("invalid_design");
     }
-    return db.get(id)
-    .then((result) => {
-        const doc = getBody(result);
+    if (typeof config.view === "undefined") {
+        throw new Error("invalid_view");
+    }
+    return db.view(config.design, config.view, {
+        include_docs: false,
+        skip: config.skip,
+        limit: config.limit,
+        startkey: "_"
+    }).then((doc) => {
         logger.debug("Document retrieved");
-        let format = {
-            total_rows: 1,
-            offset: 0,
-            rows: [
-                {
-                    id: doc._id,
-                    key: doc._id,
-                    value: {
-                        rev: doc.rev
-                    },
-                    doc: doc
-                }
-            ]
-        };
-        return format;
-    })
-    .catch((err) => {
+        if (getBody(doc).rows.length === 0) {
+            throw new Error("not_found");
+        }
+        return getBody(doc);
+    }).catch((err) => {
         if (err.error === "not_found") {
             logger.debug("Record not found.");
             throw new Error("not_found");

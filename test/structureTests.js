@@ -1,5 +1,9 @@
 "use strict";
 
+process.env.COUCH_URL = "";
+process.env.COUCH_USER = "";
+process.env.COUCH_PASS = "";
+
 const chai = require("chai"),
       assert = chai.assert,
       expect = chai.expect,
@@ -83,6 +87,7 @@ describe("Structural Tests", function () {
     });
     it("throws an error when no url is passed and no environment variable is set", function () {
         let config = {
+            url: undefined,
             user: "admin",
             pass: "somepass",
             db: "users"
@@ -94,6 +99,7 @@ describe("Structural Tests", function () {
     });
     it("throws an error when no user is passed and no environment variable is set", function () {
         let config = {
+            user: undefined,
             url: "http://test.test.com",
             pass: "somepass",
             db: "users"
@@ -104,7 +110,9 @@ describe("Structural Tests", function () {
         }).to.throw("invalid_user");
     });
     it("throws an error when no pass is passed and no environment variable is set", function () {
+        process.env.COUCH_PASS = undefined;
         let config = {
+            pass: undefined,
             url: "http://test.test.com",
             user: "admin",
             db: "users"
@@ -113,6 +121,19 @@ describe("Structural Tests", function () {
         expect(function () {
             couchAdapter(config);
         }).to.throw("invalid_pass");
+    });
+    it("throws an error when view is set, but no design is passed", function () {
+        let config = {
+            url: "http://test.test.com",
+            user: "admin",
+            pass: "llamas",
+            db: "users",
+            view: "byId"
+        };
+        process.env.COUCH_PASS = "";
+        expect(function () {
+            couchAdapter(config);
+        }).to.throw("invalid_design");
     });
     it("calls passed function", function () {
         let config = {
@@ -203,19 +224,9 @@ describe("Structural Tests", function () {
         };
         let adapter = couchAdapter(config);
         let npmPackage = require("../package.json");
-        assert.isTrue(npmPackage.version === adapter.getVersion());
-    });
-    it("changes log levels", function () {
-        let config = {
-            db: "users",
-            user: "admin",
-            pass: "somepass",
-            url: "http://test.test.com",
-            logLevel: "debug"
-        };
-        let adapter = couchAdapter(config);
-        assert.isTrue(adapter.logLevel() === "debug");
-        assert.isTrue(adapter.logLevel("info") === "info");
+        adapter.getVersion().then((result) => {
+            assert.isTrue(npmPackage.version === result.version);
+        });
     });
     it("tests whether i can do things on constuction", function () {
         let config = {

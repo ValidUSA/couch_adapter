@@ -64,9 +64,9 @@ describe(`Delete Tests on ${dbName}`, function () {
 
     it("deletes a record", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
-            pass: "secret",
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
             db: dbName
         };
         return deleteMethod(configValues, logger.child({
@@ -82,9 +82,9 @@ describe(`Delete Tests on ${dbName}`, function () {
 
     it("throws an error when record does not exist", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
-            pass: "secret",
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
             db: dbName
         };
         return deleteMethod(configValues, logger.child({
@@ -100,8 +100,8 @@ describe(`Delete Tests on ${dbName}`, function () {
 
     it("throws an error when cannot connect", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
+            url: config.url,
+            user: config.auth.user,
             pass: "hoopla",
             db: dbName
         };

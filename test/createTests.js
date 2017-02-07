@@ -2,6 +2,7 @@
 
 const chai = require("chai"),
       assert = chai.assert,
+      expect = chai.expect,
       fs = require("fs"),
       nano = require("nano"),
       prom = require("nano-promises"),
@@ -59,9 +60,9 @@ describe(`Create Tests on ${createDbName}`, function ()  {
 
     it("creates a document in a db", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
-            pass: "secret",
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
             db: createDbName
         };
         return createMethod(configValues, logger.child({
@@ -71,34 +72,29 @@ describe(`Create Tests on ${createDbName}`, function ()  {
                 type: "read"
             }), "awest2");
         }).then((doc) => {
-            assert.isTrue(doc._id === "awest2");
+            assert.isTrue(doc.rows[0].id === "awest2");
         });
     });
 
     it("updates a document in a db", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
-            pass: "secret",
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
             db: createDbName
         };
         createWest.test = "Value";
         return createMethod(configValues, logger.child({
             type: "create"
-        }), createWest).then((result) => {
-            return readMethod(configValues, logger.child({
-                type: "read"
-            }), "awest2");
-        }).then((doc) => {
-            assert.isTrue(doc._id === "awest2");
-            assert.isTrue(doc.test === "Value");
+        }), createWest).catch((error) => {
+            assert.isTrue(error.reason === "Document update conflict.");
         });
     });
 
     it("Throws an errror when config is wrong", function () {
         const configValues = {
-            url: "http://localhost:5984",
-            user: "admin",
+            url: config.url,
+            user: config.auth.user,
             pass: "hooplah",
             db: createDbName
         };
@@ -112,6 +108,21 @@ describe(`Create Tests on ${createDbName}`, function ()  {
         }).catch((error) => {
             assert.isTrue(error.message === "Name or password is incorrect.");
         });
+    });
+
+    it ("Throws an error when document has a revision already", function () {
+        const configValues = {
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
+            db: createDbName
+        };
+        createWest._rev = "Value";
+        expect(function () {
+            return createMethod(configValues, logger.child({
+                type: "create"
+            }), createWest);
+        }).to.throw("invalid_doc_state");
     });
 
     after(function (done) {

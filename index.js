@@ -2,9 +2,12 @@
 
 const pino = require("pino"),
       fs = require("fs"),
+      sanitizer = require("./src/sanitize_config.js"),
       defaultRead = require("./src/read.js"),
+      defaultReadView = require("./src/read_view.js"),
       defaultDelete = require("./src/delete.js"),
       defaultReadBulk = require("./src/read_bulk.js"),
+      defaultReadViewBulk = require("./src/read_view_bulk.js"),
       defaultCreate = require("./src/create.js"),
       defaultUpdate = require("./src/update.js"),
       fixLength = (val) => {
@@ -32,6 +35,8 @@ module.exports = function ({
     user = couchUser,
     pass = couchPass,
     db = "",
+    view = "",
+    design = "",
     read = defaultRead,
     deleteId = defaultDelete,
     readBulk = defaultReadBulk,
@@ -45,23 +50,37 @@ module.exports = function ({
         url: url,
         user: user,
         pass: pass,
-        db: db
+        db: db,
+        view: view,
+        design: design
     };
     if (config.db === "") {
-        logger.error("invalid_db", config);
+        logger.error("invalid_db", sanitizer(config));
         throw new Error("invalid_db");
     }
     if (config.url === "") {
-        logger.error("invalid_url", config);
+        logger.error("invalid_url", sanitizer(config));
         throw new Error("invalid_url");
     }
     if (config.user === "") {
-        logger.error("invalid_user", config);
+        logger.error("invalid_user", sanitizer(config));
         throw new Error("invalid_user");
     }
     if (config.pass === "") {
-        logger.error("invalid_pass or your security sucks", config);
+        logger.error("invalid_pass or your security sucks", sanitizer(config));
         throw new Error("invalid_pass");
+    }
+    if (config.view !== "") {
+        if (config.design === "") {
+            logger.error("invalid_design", sanitizer(config));
+            throw new Error("invalid_design");
+        }
+        if (read === defaultRead) { // Same as above but with Read and ReadView
+            read = defaultReadView;
+        }
+        if (readBulk === defaultReadBulk) {
+            readBulk = defaultReadViewBulk;
+        }
     }
     logger.info(`Couch Adapter Constructed for: ${config.db}`);
     logger.debug("End couch_adapter constructor.");
@@ -99,16 +118,19 @@ module.exports = function ({
             }), doc);
         },
         getVersion: () => {
-            let version = process.env.npm_package_version || require("./package.json").version;
-            return version;
+            return new Promise((resolve, reject) => {
+                let version = process.env.npm_package_version || require("./package.json").version;
+                resolve({
+                    version: version
+                });
+            });
         },
         logLevel: (level) => {
-            if (typeof level === "undefined") {
-                return logger.level;
-            } else {
-                logger.level = level;
-                return logger.level;
-            }
+            return new Promise((resolve, reject) => {
+                resolve({
+                    logLevel: logger.level
+                });
+            });
         }
     };
 };

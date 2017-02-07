@@ -22,6 +22,8 @@ module.exports = function (config, logger, id) {
         let doc = getBody(body);
         doc._deleted = true;
         return db.insert(doc);
+    }).then((result) => {
+        return getBody(result);
     }).catch((err) => {
         logger.error("An error occurred during deletion");
         logger.error(`Error Message: ${err.message}`);

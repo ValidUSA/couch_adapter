@@ -7,7 +7,7 @@ const nano = require("nano"),
       getBody = (arr) => arr[0];
 
 module.exports = function (config, logger, id) {
-    logger.debug("Begin Read Function");
+    logger.debug("Begin ReadView Function");
     let dbConfig = {
         url: config.url,
         auth: {
@@ -21,27 +21,22 @@ module.exports = function (config, logger, id) {
     if (typeof id === "undefined") {
         throw new Error("invalid_id");
     }
-    return db.get(id)
-    .then((result) => {
-        const doc = getBody(result);
+    if (typeof config.design === "undefined" || !(config.design && typeof config.design === "string")) {
+        throw new Error("invalid_design");
+    }
+    if (typeof config.view === "undefined" || !(config.view && typeof config.view === "string")) {
+        throw new Error("invalid_view");
+    }
+    return db.view(config.design, config.view, {
+        keys: [id],
+        include_docs: true
+    }).then((doc) => {
         logger.debug("Document retrieved");
-        let format = {
-            total_rows: 1,
-            offset: 0,
-            rows: [
-                {
-                    id: doc._id,
-                    key: doc._id,
-                    value: {
-                        rev: doc.rev
-                    },
-                    doc: doc
-                }
-            ]
-        };
-        return format;
-    })
-    .catch((err) => {
+        if (getBody(doc).rows.length === 0) {
+            throw new Error("not_found");
+        }
+        return getBody(doc);
+    }).catch((err) => {
         if (err.error === "not_found") {
             logger.debug("Record not found.");
             throw new Error("not_found");
