@@ -1,10 +1,10 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      randomstring = require("randomstring"),
-      expect = chai.expect,
-      urlBuilder = require("../src/url_builder.js");
+    assert = chai.assert,
+    randomstring = require("randomstring"),
+    expect = chai.expect,
+    urlBuilder = require("../src/url_builder.js");
 
 describe("URL Builder Tests", function () {
     it("builds an appropriate url with user/pass", function () {

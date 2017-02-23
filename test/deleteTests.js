@@ -1,31 +1,35 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      fs = require("fs"),
-      nano = require("nano"),
-      prom = require("nano-promises"),
-      randomstring = require("randomstring"),
-      config = require("./configData/config.json"),
-      urlBuilder = require("../src/url_builder.js"),
-      dbName = randomstring.generate({
+    assert = chai.assert,
+    fs = require("fs"),
+    nano = require("nano"),
+    prom = require("nano-promises"),
+    randomstring = require("randomstring"),
+    config = require("./configData/config.json"),
+    urlBuilder = require("../src/url_builder.js"),
+    dbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      readMethod = require("../src/read.js"),
-      deleteMethod = require("../src/delete.js"),
-      pino = require("pino"),
-      awest = require("./TestData/adam_west.json"),
-      ckent = require("./TestData/clark_kent.json"),
-      jtest = require("./TestData/jtest.json");
+    readMethod = require("../src/read.js"),
+    deleteMethod = require("../src/delete.js"),
+    pino = require("pino"),
+    awest = require("./TestData/adam_west.json"),
+    ckent = require("./TestData/clark_kent.json"),
+    jtest = require("./TestData/jtest.json");
+
+config.url = process.env.COUCH_URL || config.url;
+config.auth.user = process.env.COUCH_USER || config.auth.user;
+config.auth.pass = process.env.COUCH_PASS || config.auth.pass;
 
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter_deleteTests.log",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput));
+        fs.createWriteStream(logOutput));
 // set logger level
 logger.level = "debug";
 // database setup

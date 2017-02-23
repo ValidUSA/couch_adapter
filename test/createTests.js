@@ -1,27 +1,31 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      expect = chai.expect,
-      fs = require("fs"),
-      nano = require("nano"),
-      prom = require("nano-promises"),
-      randomstring = require("randomstring"),
-      config = require("./configData/config.json"),
-      urlBuilder = require("../src/url_builder.js"),
-      createDbName = randomstring.generate({
+    assert = chai.assert,
+    expect = chai.expect,
+    fs = require("fs"),
+    nano = require("nano"),
+    prom = require("nano-promises"),
+    randomstring = require("randomstring"),
+    config = require("./configData/config.json"),
+    urlBuilder = require("../src/url_builder.js"),
+    createDbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      createMethod = require("../src/create.js"),
-      readMethod = require("../src/read.js"),
-      pino = require("pino"),
-      createWest = {
+    createMethod = require("../src/create.js"),
+    readMethod = require("../src/read.js"),
+    pino = require("pino"),
+    createWest = {
         _id: "awest2",
         schema: "wadol",
         encounterId: "12345"
     };
+
+config.url = process.env.COUCH_URL || config.url;
+config.auth.user = process.env.COUCH_USER || config.auth.user;
+config.auth.pass = process.env.COUCH_PASS || config.auth.pass;
 
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter_createTests.log",
@@ -29,7 +33,7 @@ let logDir = process.env.LOG_DIR || "./",
         name: "couch_adapter",
         level: "debug"
     },
-    fs.createWriteStream(logOutput));
+        fs.createWriteStream(logOutput));
 createWest._id = "awest2";
 // database setup
 const dbSetup = function (configSettings) {
@@ -50,7 +54,7 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe(`Create Tests on ${createDbName}`, function ()  {
+describe(`Create Tests on ${createDbName}`, function () {
     before(function (done) {
         this.timeout(5000);
         dbSetup(config).then((result) => {
@@ -110,7 +114,7 @@ describe(`Create Tests on ${createDbName}`, function ()  {
         });
     });
 
-    it ("Throws an error when document has a revision already", function () {
+    it("Throws an error when document has a revision already", function () {
         const configValues = {
             url: config.url,
             user: config.auth.user,

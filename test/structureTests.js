@@ -5,9 +5,9 @@ process.env.COUCH_USER = "";
 process.env.COUCH_PASS = "";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      expect = chai.expect,
-      couchAdapter = require("../index.js");
+    assert = chai.assert,
+    expect = chai.expect,
+    couchAdapter = require("../index.js");
 
 const testFunction = function (config, logger, id) {
     logger.debug({
@@ -75,7 +75,7 @@ describe("Structural Tests", function () {
         assert.isFunction(adapter.readBulk);
         assert.isFunction(adapter.update);
     });
-    it ("throws error when no db is passed", function () {
+    it("throws error when no db is passed", function () {
         let config = {
             user: "admin",
             pass: "somepass",
@@ -146,12 +146,12 @@ describe("Structural Tests", function () {
         };
         let adapter = couchAdapter(config);
         adapter.read("12345")
-        .then((val) => {
-            assert.isTrue(val.id === "12345");
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .then((val) => {
+                assert.isTrue(val.id === "12345");
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     });
     it("applies skip and limit to config", function () {
         let config = {

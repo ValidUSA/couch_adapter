@@ -1,10 +1,10 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      randomstring = require("randomstring"),
-      expect = chai.expect,
-      sanitizeConfig = require("../src/sanitize_config.js");
+    assert = chai.assert,
+    randomstring = require("randomstring"),
+    expect = chai.expect,
+    sanitizeConfig = require("../src/sanitize_config.js");
 
 describe("sanitize config tests", function () {
     it("changes password to string of asteriks of the same length", function () {

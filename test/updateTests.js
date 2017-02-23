@@ -1,27 +1,31 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      expect = chai.expect,
-      fs = require("fs"),
-      nano = require("nano"),
-      prom = require("nano-promises"),
-      randomstring = require("randomstring"),
-      config = require("./configData/config.json"),
-      urlBuilder = require("../src/url_builder.js"),
-      updateDbName = randomstring.generate({
+    assert = chai.assert,
+    expect = chai.expect,
+    fs = require("fs"),
+    nano = require("nano"),
+    prom = require("nano-promises"),
+    randomstring = require("randomstring"),
+    config = require("./configData/config.json"),
+    urlBuilder = require("../src/url_builder.js"),
+    updateDbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      updateMethod = require("../src/update.js"),
-      readMethod = require("../src/read.js"),
-      pino = require("pino"),
-      updateWest = {
+    updateMethod = require("../src/update.js"),
+    readMethod = require("../src/read.js"),
+    pino = require("pino"),
+    updateWest = {
         _id: "awest3",
         schema: "wadol",
         encounterId: "12345"
     };
+
+config.url = process.env.COUCH_URL || config.url;
+config.auth.user = process.env.COUCH_USER || config.auth.user;
+config.auth.pass = process.env.COUCH_PASS || config.auth.pass;
 
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter_updateTests.log",
@@ -29,7 +33,7 @@ let logDir = process.env.LOG_DIR || "./",
         name: "couch_adapter",
         level: "debug"
     },
-    fs.createWriteStream(logOutput));
+        fs.createWriteStream(logOutput));
 
 // database setup
 const dbSetup = function (configSettings) {
@@ -53,7 +57,7 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe(`Update Tests on ${updateDbName}`, function ()  {
+describe(`Update Tests on ${updateDbName}`, function () {
     before(function (done) {
         this.timeout(5000);
         dbSetup(config).then((result) => {
@@ -69,8 +73,8 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
             db: updateDbName
         };
         return readMethod(configValues, logger.child({
-                type: "read"
-            }), "awest3").then((result) => {
+            type: "read"
+        }), "awest3").then((result) => {
             let doc = result.rows[0].doc;
             doc.test = "Value";
             return updateMethod(configValues, logger.child({

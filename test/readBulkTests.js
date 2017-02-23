@@ -1,30 +1,34 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      fs = require("fs"),
-      nano = require("nano"),
-      prom = require("nano-promises"),
-      randomstring = require("randomstring"),
-      config = require("./configData/config.json"),
-      urlBuilder = require("../src/url_builder.js"),
-      newdbName = randomstring.generate({
+    assert = chai.assert,
+    fs = require("fs"),
+    nano = require("nano"),
+    prom = require("nano-promises"),
+    randomstring = require("randomstring"),
+    config = require("./configData/config.json"),
+    urlBuilder = require("../src/url_builder.js"),
+    newdbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      readBulkMethod = require("../src/read_bulk.js"),
-      pino = require("pino"),
-      awest = require("./TestData/adam_west.json"),
-      ckent = require("./TestData/clark_kent.json"),
-      jtest = require("./TestData/jtest.json");
+    readBulkMethod = require("../src/read_bulk.js"),
+    pino = require("pino"),
+    awest = require("./TestData/adam_west.json"),
+    ckent = require("./TestData/clark_kent.json"),
+    jtest = require("./TestData/jtest.json");
+
+config.url = process.env.COUCH_URL || config.url;
+config.auth.user = process.env.COUCH_USER || config.auth.user;
+config.auth.pass = process.env.COUCH_PASS || config.auth.pass;
 
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter_readBulkTests.log",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput));
+        fs.createWriteStream(logOutput));
 // set logger level
 logger.level = "debug";
 // database setup
@@ -37,7 +41,7 @@ const dbSetup = function (configSettings) {
             // console.log(result);
         });
         return db.insert(awest).then((body) => {
-            return db.insert(ckent).catch((error)=> {
+            return db.insert(ckent).catch((error) => {
                 console.log("It was ckent");
                 return error;
             });

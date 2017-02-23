@@ -1,0 +1,311 @@
+{
+  "stats": {
+    "suites": 10,
+    "tests": 55,
+    "passes": 36,
+    "pending": 0,
+    "failures": 19,
+    "start": "2017-02-23T22:34:08.345Z",
+    "end": "2017-02-23T22:34:08.502Z",
+    "duration": 157
+  },
+  "failures": [
+    {
+      "title": "creates a document in a db",
+      "fullTitle": "Create Tests on kdytuxuiqttsyeq creates a document in a db",
+      "duration": 8,
+      "error": "Error: connect ECONNREFUSED 127.0.0.1:5984\n    at Object.exports._errnoException (util.js:1022:11)\n    at exports._exceptionWithHostPort (util.js:1045:20)\n    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)"
+    },
+    {
+      "title": "updates a document in a db",
+      "fullTitle": "Create Tests on kdytuxuiqttsyeq updates a document in a db",
+      "duration": 4,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at createMethod.catch (test/createTests.js:90:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "Throws an errror when config is wrong",
+      "fullTitle": "Create Tests on kdytuxuiqttsyeq Throws an errror when config is wrong",
+      "duration": 2,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at createMethod.then.catch (test/createTests.js:109:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "deletes a record",
+      "fullTitle": "Delete Tests on tspkevnfnoubbda deletes a record",
+      "duration": 5,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at deleteMethod.then.catch (test/deleteTests.js:79:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "throws an error when record does not exist",
+      "fullTitle": "Delete Tests on tspkevnfnoubbda throws an error when record does not exist",
+      "duration": 2,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at deleteMethod.then.catch (test/deleteTests.js:97:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "throws an error when cannot connect",
+      "fullTitle": "Delete Tests on tspkevnfnoubbda throws an error when cannot connect",
+      "duration": 3,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at deleteMethod.then.catch (test/deleteTests.js:115:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "gets all records from db when # of docs is less than limit",
+      "fullTitle": "read bulk tests on pwvvxledcuwapnn gets all records from db when # of docs is less than limit",
+      "duration": 4,
+      "error": "Error: connect ECONNREFUSED 127.0.0.1:5984\n    at Object.exports._errnoException (util.js:1022:11)\n    at exports._exceptionWithHostPort (util.js:1045:20)\n    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)"
+    },
+    {
+      "title": "returns a records equal to limit",
+      "fullTitle": "read bulk tests on pwvvxledcuwapnn returns a records equal to limit",
+      "duration": 3,
+      "error": "Error: connect ECONNREFUSED 127.0.0.1:5984\n    at Object.exports._errnoException (util.js:1022:11)\n    at exports._exceptionWithHostPort (util.js:1045:20)\n    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)"
+    },
+    {
+      "title": "returns correct record when skip is passed",
+      "fullTitle": "read bulk tests on pwvvxledcuwapnn returns correct record when skip is passed",
+      "duration": 4,
+      "error": "Error: connect ECONNREFUSED 127.0.0.1:5984\n    at Object.exports._errnoException (util.js:1022:11)\n    at exports._exceptionWithHostPort (util.js:1045:20)\n    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1087:14)"
+    },
+    {
+      "title": "throws an error when configuration is incorrect",
+      "fullTitle": "read bulk tests on pwvvxledcuwapnn throws an error when configuration is incorrect",
+      "duration": 2,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at readBulkMethod.catch (test/readBulkTests.js:134:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "gets all records from db when # of docs is less than limit",
+      "fullTitle": "read bulk view tests on dywtauzautfnisd gets all records from db when # of docs is less than limit",
+      "duration": 4,
+      "error": "Error: error happened in your connection\n    at db.view.then.catch (src/read_view_bulk.js:46:19)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "returns a records equal to limit",
+      "fullTitle": "read bulk view tests on dywtauzautfnisd returns a records equal to limit",
+      "duration": 3,
+      "error": "Error: error happened in your connection\n    at db.view.then.catch (src/read_view_bulk.js:46:19)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "returns correct record when skip is passed",
+      "fullTitle": "read bulk view tests on dywtauzautfnisd returns correct record when skip is passed",
+      "duration": 3,
+      "error": "Error: error happened in your connection\n    at db.view.then.catch (src/read_view_bulk.js:46:19)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "throws an error when configuration is incorrect",
+      "fullTitle": "read bulk view tests on dywtauzautfnisd throws an error when configuration is incorrect",
+      "duration": 4,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at readBulkMethod.catch (test/readBulkViewTests.js:153:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "reads the appropriate record",
+      "fullTitle": "read tests on spxdbvszbsmfkha reads the appropriate record",
+      "duration": 2,
+      "error": "Error: error happened in your connection\n    at db.get.then.catch (src/read.js:52:19)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "throws a not_found error when record not found",
+      "fullTitle": "read tests on spxdbvszbsmfkha throws a not_found error when record not found",
+      "duration": 2,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at readMethod.catch (test/readTests.js:90:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "reads the appropriate record",
+      "fullTitle": "read view tests on ibgjhzoinotuiqz reads the appropriate record",
+      "duration": 3,
+      "error": "Error: error happened in your connection\n    at db.view.then.catch (src/read_view.js:47:19)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "throws a not_found error when record not found",
+      "fullTitle": "read view tests on ibgjhzoinotuiqz throws a not_found error when record not found",
+      "duration": 3,
+      "error": "AssertionError: expected false to be true\n    at Function.assert.isTrue (node_modules/chai/lib/chai/interface/assert.js:332:31)\n    at readViewMethod.then.catch (test/readViewTests.js:106:20)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    },
+    {
+      "title": "updates a document in a db",
+      "fullTitle": "Update Tests on taygbrdzpjqdopl updates a document in a db",
+      "duration": 2,
+      "error": "Error: error happened in your connection\n    at db.get.then.catch (src/read.js:52:19)\n    at process._tickCallback (internal/process/next_tick.js:103:7)"
+    }
+  ],
+  "passes": [
+    {
+      "title": "Throws an error when document has a revision already",
+      "fullTitle": "Create Tests on kdytuxuiqttsyeq Throws an error when document has a revision already",
+      "duration": 1
+    },
+    {
+      "title": "throws a invalid_id error when id undefined",
+      "fullTitle": "read tests on spxdbvszbsmfkha throws a invalid_id error when id undefined",
+      "duration": 0
+    },
+    {
+      "title": "throws invalid_db error when database doesn't exist",
+      "fullTitle": "read tests on spxdbvszbsmfkha throws invalid_db error when database doesn't exist",
+      "duration": 1
+    },
+    {
+      "title": "throws error when config is not correct",
+      "fullTitle": "read tests on spxdbvszbsmfkha throws error when config is not correct",
+      "duration": 0
+    },
+    {
+      "title": "throws a invalid_id error when id undefined",
+      "fullTitle": "read view tests on ibgjhzoinotuiqz throws a invalid_id error when id undefined",
+      "duration": 0
+    },
+    {
+      "title": "throws invalid_db error when database doesn't exist",
+      "fullTitle": "read view tests on ibgjhzoinotuiqz throws invalid_db error when database doesn't exist",
+      "duration": 1
+    },
+    {
+      "title": "throws error when config is not correct",
+      "fullTitle": "read view tests on ibgjhzoinotuiqz throws error when config is not correct",
+      "duration": 1
+    },
+    {
+      "title": "changes password to string of asteriks of the same length",
+      "fullTitle": "sanitize config tests changes password to string of asteriks of the same length",
+      "duration": 0
+    },
+    {
+      "title": "changes username to string of asteriks of the same length",
+      "fullTitle": "sanitize config tests changes username to string of asteriks of the same length",
+      "duration": 0
+    },
+    {
+      "title": "changes username and password to string of asteriks of the same length",
+      "fullTitle": "sanitize config tests changes username and password to string of asteriks of the same length",
+      "duration": 0
+    },
+    {
+      "title": "changes username and password that reside in object",
+      "fullTitle": "sanitize config tests changes username and password that reside in object",
+      "duration": 0
+    },
+    {
+      "title": "goes even deeper",
+      "fullTitle": "sanitize config tests goes even deeper",
+      "duration": 0
+    },
+    {
+      "title": "does not change object without user, pass, username, password, or pwd",
+      "fullTitle": "sanitize config tests does not change object without user, pass, username, password, or pwd",
+      "duration": 0
+    },
+    {
+      "title": "hits all of the aliases user, pass, username, password, and pwd",
+      "fullTitle": "sanitize config tests hits all of the aliases user, pass, username, password, and pwd",
+      "duration": 0
+    },
+    {
+      "title": "returns an object with appropriate functions",
+      "fullTitle": "Structural Tests returns an object with appropriate functions",
+      "duration": 1
+    },
+    {
+      "title": "throws error when no db is passed",
+      "fullTitle": "Structural Tests throws error when no db is passed",
+      "duration": 0
+    },
+    {
+      "title": "throws an error when no url is passed and no environment variable is set",
+      "fullTitle": "Structural Tests throws an error when no url is passed and no environment variable is set",
+      "duration": 0
+    },
+    {
+      "title": "throws an error when no user is passed and no environment variable is set",
+      "fullTitle": "Structural Tests throws an error when no user is passed and no environment variable is set",
+      "duration": 0
+    },
+    {
+      "title": "throws an error when no pass is passed and no environment variable is set",
+      "fullTitle": "Structural Tests throws an error when no pass is passed and no environment variable is set",
+      "duration": 0
+    },
+    {
+      "title": "throws an error when view is set, but no design is passed",
+      "fullTitle": "Structural Tests throws an error when view is set, but no design is passed",
+      "duration": 1
+    },
+    {
+      "title": "calls passed function",
+      "fullTitle": "Structural Tests calls passed function",
+      "duration": 1
+    },
+    {
+      "title": "applies skip and limit to config",
+      "fullTitle": "Structural Tests applies skip and limit to config",
+      "duration": 0
+    },
+    {
+      "title": "Calls delete function",
+      "fullTitle": "Structural Tests Calls delete function",
+      "duration": 1
+    },
+    {
+      "title": "Calls create function",
+      "fullTitle": "Structural Tests Calls create function",
+      "duration": 1
+    },
+    {
+      "title": "Calls update function",
+      "fullTitle": "Structural Tests Calls update function",
+      "duration": 0
+    },
+    {
+      "title": "gets correct version number",
+      "fullTitle": "Structural Tests gets correct version number",
+      "duration": 0
+    },
+    {
+      "title": "tests whether i can do things on constuction",
+      "fullTitle": "Structural Tests tests whether i can do things on constuction",
+      "duration": 1
+    },
+    {
+      "title": "Throws an error if revision is not on a document",
+      "fullTitle": "Update Tests on taygbrdzpjqdopl Throws an error if revision is not on a document",
+      "duration": 1
+    },
+    {
+      "title": "builds an appropriate url with user/pass",
+      "fullTitle": "URL Builder Tests builds an appropriate url with user/pass",
+      "duration": 0
+    },
+    {
+      "title": "builds an appropriate https url with user/pass",
+      "fullTitle": "URL Builder Tests builds an appropriate https url with user/pass",
+      "duration": 0
+    },
+    {
+      "title": "builds an appropriate https url with useSSL is true",
+      "fullTitle": "URL Builder Tests builds an appropriate https url with useSSL is true",
+      "duration": 0
+    },
+    {
+      "title": "builds an appropriate url when no http or http is passed",
+      "fullTitle": "URL Builder Tests builds an appropriate url when no http or http is passed",
+      "duration": 0
+    },
+    {
+      "title": "throws an error if user is missing",
+      "fullTitle": "URL Builder Tests throws an error if user is missing",
+      "duration": 0
+    },
+    {
+      "title": "throws an error if password is missing",
+      "fullTitle": "URL Builder Tests throws an error if password is missing",
+      "duration": 0
+    },
+    {
+      "title": "throws an error if auth object is missing",
+      "fullTitle": "URL Builder Tests throws an error if auth object is missing",
+      "duration": 0
+    },
+    {
+      "title": "throws an error if url is missing",
+      "fullTitle": "URL Builder Tests throws an error if url is missing",
+      "duration": 1
+    }
+  ],
+  "skipped": []
+}
