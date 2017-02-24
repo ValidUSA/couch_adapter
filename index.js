@@ -103,9 +103,14 @@ module.exports = function ({
                 type: "delete"
             }), id);
         },
-        readBulk: (skip = 0, limit = 50) => {
+        readBulk: (skip = 0, limit = 50, keys = []) => {
             config.limit = limit;
             config.skip = skip;
+            if (Array.isArray(keys)) {
+                config.keys = keys;
+            } else {
+                throw new Error("invalid_args");
+            }
             logger.debug("Perform Read Bulk");
             return readBulk(config, logger.child({
                 type: "read bulk"

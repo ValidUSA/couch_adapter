@@ -93,8 +93,8 @@ describe(`read bulk view tests on ${newdbName}`, function () {
             limit: 5,
             skip: 0,
             design: "testViews",
-            view: "by_TypeOfLicense"
-
+            view: "by_TypeOfLicense",
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -112,7 +112,8 @@ describe(`read bulk view tests on ${newdbName}`, function () {
             limit: 1,
             skip: 0,
             design: "testViews",
-            view: "by_TypeOfLicense"
+            view: "by_TypeOfLicense",
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -130,13 +131,35 @@ describe(`read bulk view tests on ${newdbName}`, function () {
             limit: 1,
             skip: 2,
             design: "testViews",
-            view: "by_TypeOfLicense"
+            view: "by_TypeOfLicense",
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
         })).then((result) => {
             assert.isTrue(result.rows.length === 1);
             assert.isTrue(result.rows[0].id === "jtest");
+        });
+    });
+
+    it("returns correct records when keys are passed", function () {
+        const configValues = {
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
+            db: newdbName,
+            limit: 50,
+            skip: 0,
+            design: "testViews",
+            view: "by_TypeOfLicense",
+            keys: ["EDL", "ID"]
+        };
+        return readBulkMethod(configValues, logger.child({
+            type: "read bulk"
+        })).then((result) => {
+            assert.isTrue(result.rows.length === 2);
+            assert.isTrue(result.rows[0].id === "awest");
+            assert.isTrue(result.rows[1].id === "ckent");
         });
     });
 
@@ -149,7 +172,8 @@ describe(`read bulk view tests on ${newdbName}`, function () {
             limit: 1,
             skip: 2,
             design: "testViews",
-            view: "by_TypeOfLicense"
+            view: "by_TypeOfLicense",
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
