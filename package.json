@@ -1,6 +1,6 @@
 {
   "name": "couch_adapter",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "description": "An adpater to the couchdb that gives CRUD API for a database",
   "main": "index.js",
   "scripts": {
