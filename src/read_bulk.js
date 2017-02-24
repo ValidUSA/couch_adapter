@@ -20,10 +20,13 @@ module.exports = function (config, logger) {
         params = {
         skip: config.skip,
         limit: config.limit,
-        include_docs: true,
-        startkey: "_"
+        include_docs: true
     };
-
+    if (config.keys.length > 0) {
+        params.keys = config.keys;
+    } else {
+        params.startkey = "_";
+    }
     return db.list(params).then((body) => {
         logger.debug("Docs Retrieved");
         return getBody(body);

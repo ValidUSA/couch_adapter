@@ -228,7 +228,20 @@ describe("Structural Tests", function () {
             assert.isTrue(npmPackage.version === result.version);
         });
     });
-    it("tests whether i can do things on constuction", function () {
+    it("throws an exception when keys is not an array", function () {
+        let config = {
+            db: "users",
+            user: "admin",
+            pass: "somepass",
+            url: "http://test.test.com",
+            logLevel: "debug",
+            readBulk: testGetAllFunction
+        };
+        expect(function () {
+            couchAdapter(config).readBulk(0, 50, "stuff");
+        }).to.throw("invalid_args");
+    })
+    it("tests whether i can do things on construction", function () {
         let config = {
             db: "users",
             user: "admin",
