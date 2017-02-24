@@ -10,7 +10,8 @@
     "lint:jshint": "jshint ./src/ && jshint ./index.js",
     "lint:jscs": "./node_modules/.bin/jscs ./src/ && jscs ./index.js",
     "lint:testJscs": "./node_modules/.bin/jscs ./test/",
-    "lint:testJshint": "./node_modules/.bin/jshint ./test/"
+    "lint:testJshint": "./node_modules/.bin/jshint ./test/",
+    "pretest": "npm run lint"
   },
   "repository": {
     "type": "git",

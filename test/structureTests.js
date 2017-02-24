@@ -240,7 +240,7 @@ describe("Structural Tests", function () {
         expect(function () {
             couchAdapter(config).readBulk(0, 50, "stuff");
         }).to.throw("invalid_args");
-    })
+    });
     it("tests whether i can do things on construction", function () {
         let config = {
             db: "users",
