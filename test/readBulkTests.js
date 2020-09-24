@@ -1,30 +1,34 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      fs = require("fs"),
-      nano = require("nano"),
-      prom = require("nano-promises"),
-      randomstring = require("randomstring"),
-      config = require("./configData/config.json"),
-      urlBuilder = require("../src/url_builder.js"),
-      newdbName = randomstring.generate({
+    assert = chai.assert,
+    fs = require("fs"),
+    nano = require("nano"),
+    prom = require("nano-promises"),
+    randomstring = require("randomstring"),
+    config = require("./configData/config.json"),
+    urlBuilder = require("../src/url_builder.js"),
+    newdbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      readBulkMethod = require("../src/read_bulk.js"),
-      pino = require("pino"),
-      awest = require("./TestData/adam_west.json"),
-      ckent = require("./TestData/clark_kent.json"),
-      jtest = require("./TestData/jtest.json");
+    readBulkMethod = require("../src/read_bulk.js"),
+    pino = require("pino"),
+    awest = require("./TestData/adam_west.json"),
+    ckent = require("./TestData/clark_kent.json"),
+    jtest = require("./TestData/jtest.json");
+
+config.url = process.env.COUCH_URL || config.url;
+config.auth.user = process.env.COUCH_USER || config.auth.user;
+config.auth.pass = process.env.COUCH_PASS || config.auth.pass;
 
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter_readBulkTests.log",
     logger = pino({
         name: "couch_adapter"
     },
-    fs.createWriteStream(logOutput));
+        fs.createWriteStream(logOutput));
 // set logger level
 logger.level = "debug";
 // database setup
@@ -37,7 +41,7 @@ const dbSetup = function (configSettings) {
             // console.log(result);
         });
         return db.insert(awest).then((body) => {
-            return db.insert(ckent).catch((error)=> {
+            return db.insert(ckent).catch((error) => {
                 console.log("It was ckent");
                 return error;
             });
@@ -77,7 +81,8 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: config.auth.pass,
             db: newdbName,
             limit: 5,
-            skip: 0
+            skip: 0,
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -93,7 +98,8 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: config.auth.pass,
             db: newdbName,
             limit: 1,
-            skip: 0
+            skip: 0,
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
@@ -109,13 +115,33 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: config.auth.pass,
             db: newdbName,
             limit: 1,
-            skip: 2
+            skip: 2,
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"
         })).then((result) => {
             assert.isTrue(result.rows.length === 1);
             assert.isTrue(result.rows[0].id === "jtest");
+        });
+    });
+
+    it("returns correct records when keys are passed", function () {
+        const configValues = {
+            url: config.url,
+            user: config.auth.user,
+            pass: config.auth.pass,
+            db: newdbName,
+            limit: 25,
+            skip: 0,
+            keys: ["awest", "jtest"]
+        };
+        return readBulkMethod(configValues, logger.child({
+            type: "read bulk"
+        })).then((result) => {
+            assert.isTrue(result.rows.length === 2);
+            assert.isTrue(result.rows[0].id === "awest");
+            assert.isTrue(result.rows[1].id === "jtest");
         });
     });
 
@@ -126,7 +152,8 @@ describe(`read bulk tests on ${newdbName}`, function () {
             pass: "hooplah",
             db: newdbName,
             limit: 1,
-            skip: 2
+            skip: 2,
+            keys: []
         };
         return readBulkMethod(configValues, logger.child({
             type: "read bulk"

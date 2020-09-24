@@ -22,19 +22,20 @@ module.exports = function (config, logger, id) {
         throw new Error("invalid_id");
     }
     return db.get(id)
-    .then((doc) => {
+    .then((result) => {
+        const doc = getBody(result);
         logger.debug("Document retrieved");
         let format = {
             total_rows: 1,
             offset: 0,
             rows: [
                 {
-                    id: getBody(doc)._id,
-                    key: getBody(doc)._id,
+                    id: doc._id,
+                    key: doc._id,
                     value: {
-                        rev: getBody(doc).rev
+                        rev: doc.rev
                     },
-                    doc: getBody(doc)
+                    doc: doc
                 }
             ]
         };

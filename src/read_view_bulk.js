@@ -24,12 +24,17 @@ module.exports = function (config, logger, id) {
     if (typeof config.view === "undefined") {
         throw new Error("invalid_view");
     }
-    return db.view(config.design, config.view, {
-        include_docs: false,
+    let params = {
+        include_docs: true,
         skip: config.skip,
-        limit: config.limit,
-        startkey: "_"
-    }).then((doc) => {
+        limit: config.limit
+    };
+    if (config.keys.length > 0) {
+        params.keys = config.keys;
+    } else {
+        params.startkey = "_";
+    }
+    return db.view(config.design, config.view, params).then((doc) => {
         logger.debug("Document retrieved");
         if (getBody(doc).rows.length === 0) {
             throw new Error("not_found");

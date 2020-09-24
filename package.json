@@ -1,16 +1,17 @@
 {
   "name": "couch_adapter",
-  "version": "1.1.1",
+  "version": "1.1.84",
   "description": "An adpater to the couchdb that gives CRUD API for a database",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha",
+    "test": "./node_modules/.bin/mocha -R mocha-bamboo-reporter",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec",
     "lint": "npm run lint:jshint && npm run lint:jscs && npm run lint:testJscs && npm run lint:testJshint",
     "lint:jshint": "jshint ./src/ && jshint ./index.js",
-    "lint:jscs": "jscs ./src/ && jscs ./index.js",
-    "lint:testJscs": "jscs ./test/",
-    "lint:testJshint": "jshint ./test/"
+    "lint:jscs": "./node_modules/.bin/jscs ./src/ && jscs ./index.js",
+    "lint:testJscs": "./node_modules/.bin/jscs ./test/",
+    "lint:testJshint": "./node_modules/.bin/jshint ./test/",
+    "pretest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,10 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
+    "jscs": "^3.0.7",
+    "jshint": "^2.9.4",
     "mocha": "^3.2.0",
+    "mocha-bamboo-reporter": "^1.1.1",
     "randomstring": "^1.1.5"
   },
   "dependencies": {

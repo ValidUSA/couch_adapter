@@ -17,32 +17,12 @@ module.exports = function (config, logger, doc) {
     },
     url = urlBuilder(dbConfig),
     db = prom(nano(url)).db.use(config.db);
+    if (typeof doc._rev !== "undefined") {
+        throw new Error("invalid_doc_state");
+    }
     return db.insert(doc).then((body) => {
-        logger.debug("Initial Insert Successful");
-        return [getBody(body),"Success"];
-    }).catch((reason) => {
-        if (reason.message === "Document update conflict.") {
-            logger.debug("Initial Insert Failed, Checking Revision");
-            return db.head(doc._id);
-        } else {
-            throw reason;
-        }
-    }).then((header) => {
-        if (header[1] !== "Success") {
-            logger.debug("Trying to insert with rev: ", header[1].etag.replace(/"/g, ""));
-            doc._rev = header[1].etag.replace(/"/g, "");
-            return db.insert(doc);
-        } else {
-            return header;
-        }
-    }).then((body) => {
-        if (body !== "Success") {
-            logger.debug("Second Insert Successful");
-            return getBody(body);
-        } else {
-            logger.debug("Initial was successful, passing along");
-            return getBody(body);
-        }
+        logger.debug("Insert Successful");
+        return getBody(body);
     }).catch((err)=> {
         logger.error("Insert Failed");
         logger.error(`Error Message: ${err.message}`);

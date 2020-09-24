@@ -2,6 +2,7 @@
 
 const pino = require("pino"),
       fs = require("fs"),
+      sanitizer = require("./src/sanitize_config.js"),
       defaultRead = require("./src/read.js"),
       defaultReadView = require("./src/read_view.js"),
       defaultDelete = require("./src/delete.js"),
@@ -54,24 +55,24 @@ module.exports = function ({
         design: design
     };
     if (config.db === "") {
-        logger.error("invalid_db", config);
+        logger.error("invalid_db", sanitizer(config));
         throw new Error("invalid_db");
     }
     if (config.url === "") {
-        logger.error("invalid_url", config);
+        logger.error("invalid_url", sanitizer(config));
         throw new Error("invalid_url");
     }
     if (config.user === "") {
-        logger.error("invalid_user", config);
+        logger.error("invalid_user", sanitizer(config));
         throw new Error("invalid_user");
     }
     if (config.pass === "") {
-        logger.error("invalid_pass or your security sucks", config);
+        logger.error("invalid_pass or your security sucks", sanitizer(config));
         throw new Error("invalid_pass");
     }
     if (config.view !== "") {
         if (config.design === "") {
-            logger.error("invalid_design", config);
+            logger.error("invalid_design", sanitizer(config));
             throw new Error("invalid_design");
         }
         if (read === defaultRead) { // Same as above but with Read and ReadView
@@ -102,9 +103,14 @@ module.exports = function ({
                 type: "delete"
             }), id);
         },
-        readBulk: (skip = 0, limit = 50) => {
+        readBulk: (skip = 0, limit = 50, keys = []) => {
             config.limit = limit;
             config.skip = skip;
+            if (Array.isArray(keys)) {
+                config.keys = keys;
+            } else {
+                throw new Error("invalid_args");
+            }
             logger.debug("Perform Read Bulk");
             return readBulk(config, logger.child({
                 type: "read bulk"

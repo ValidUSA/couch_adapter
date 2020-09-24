@@ -1,26 +1,31 @@
 "use strict";
 
 const chai = require("chai"),
-      assert = chai.assert,
-      fs = require("fs"),
-      nano = require("nano"),
-      prom = require("nano-promises"),
-      randomstring = require("randomstring"),
-      config = require("./configData/config.json"),
-      urlBuilder = require("../src/url_builder.js"),
-      updateDbName = randomstring.generate({
+    assert = chai.assert,
+    expect = chai.expect,
+    fs = require("fs"),
+    nano = require("nano"),
+    prom = require("nano-promises"),
+    randomstring = require("randomstring"),
+    config = require("./configData/config.json"),
+    urlBuilder = require("../src/url_builder.js"),
+    updateDbName = randomstring.generate({
         length: 15,
         capitalization: "lowercase",
         charset: "alphabetic"
     }),
-      updateMethod = require("../src/update.js"),
-      readMethod = require("../src/read.js"),
-      pino = require("pino"),
-      updateWest = {
+    updateMethod = require("../src/update.js"),
+    readMethod = require("../src/read.js"),
+    pino = require("pino"),
+    updateWest = {
         _id: "awest3",
         schema: "wadol",
         encounterId: "12345"
     };
+
+config.url = process.env.COUCH_URL || config.url;
+config.auth.user = process.env.COUCH_USER || config.auth.user;
+config.auth.pass = process.env.COUCH_PASS || config.auth.pass;
 
 let logDir = process.env.LOG_DIR || "./",
     logOutput = logDir + "couch_adapter_updateTests.log",
@@ -28,13 +33,16 @@ let logDir = process.env.LOG_DIR || "./",
         name: "couch_adapter",
         level: "debug"
     },
-    fs.createWriteStream(logOutput));
+        fs.createWriteStream(logOutput));
 
 // database setup
 const dbSetup = function (configSettings) {
     let url = urlBuilder(configSettings);
     let target = prom(nano(url));
-    return target.db.create(updateDbName).catch((err) => {
+    return target.db.create(updateDbName).then((body) => {
+        let db = target.db.use(updateDbName);
+        return db.insert(updateWest);
+    }).catch((err) => {
         // console.log(err);
         return err;
     });
@@ -49,29 +57,11 @@ const dbTeardown = (configSettings) => {
     });
 };
 
-describe(`Update Tests on ${updateDbName}`, function ()  {
+describe(`Update Tests on ${updateDbName}`, function () {
     before(function (done) {
         this.timeout(5000);
         dbSetup(config).then((result) => {
             done();
-        });
-    });
-
-    it("creates a document in a db", function () {
-        const configValues = {
-            url: config.url,
-            user: config.auth.user,
-            pass: config.auth.pass,
-            db: updateDbName
-        };
-        return updateMethod(configValues, logger.child({
-            type: "update"
-        }), updateWest).then((result) => {
-            return readMethod(configValues, logger.child({
-                type: "read"
-            }), "awest3");
-        }).then((doc) => {
-            assert.isTrue(doc.rows[0].id === "awest3");
         });
     });
 
@@ -82,10 +72,15 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
             pass: config.auth.pass,
             db: updateDbName
         };
-        updateWest.test = "Value";
-        return updateMethod(configValues, logger.child({
-            type: "update"
-        }), updateWest).then((result) => {
+        return readMethod(configValues, logger.child({
+            type: "read"
+        }), "awest3").then((result) => {
+            let doc = result.rows[0].doc;
+            doc.test = "Value";
+            return updateMethod(configValues, logger.child({
+                type: "update"
+            }), doc);
+        }).then((result) => {
             return readMethod(configValues, logger.child({
                 type: "read"
             }), "awest3");
@@ -95,23 +90,18 @@ describe(`Update Tests on ${updateDbName}`, function ()  {
         });
     });
 
-    it("Throws an errror when config is wrong", function () {
+    it("Throws an error if revision is not on a document", function () {
         const configValues = {
             url: config.url,
             user: config.auth.user,
-            pass: "hooplah",
+            pass: config.auth.pass,
             db: updateDbName
         };
-        updateWest.test = "Value";
-        return updateMethod(configValues, logger.child({
-            type: "create"
-        }), updateWest).then((result) => {
-            return readMethod(configValues, logger.child({
-                type: "read"
-            }), "awest3");
-        }).catch((error) => {
-            assert.isTrue(error.message === "Name or password is incorrect.");
-        });
+        expect(function () {
+            updateMethod(configValues, logger.child({
+                type: "update"
+            }), updateWest);
+        }).to.throw("invalid_doc_state");
     });
 
     after(function (done) {
